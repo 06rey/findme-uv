@@ -143,7 +143,7 @@
                           <?php
                             date_default_timezone_set('Asia/Manila');
                             $hidden = '';
-                            if ($trip->query_date_time < date('Y-m-d H:i:s') || $trip->status == 'Arrived' || $trip->status == 'Cancelled') {
+                            if ($trip->status == 'Traveling' || $trip->status == 'Arrived' || $trip->status == 'Cancelled') {
                               $hidden = 'none';
                             } else {
                               $hidden = 'block';

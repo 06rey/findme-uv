@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                   <label class="col-sm-2 control-label">Trip Status : </label>
                                   <div class="col-sm-8">
-                                    <input type="text" name="" id=""  class="form-control" value="<?php echo $trip->status ?>" disabled>
+                                    <input type="text" name="" id=""  class="form-control" value="<?php echo $trip->status ?>">
                                   </div>
                                 </div>
 
@@ -121,52 +121,43 @@
                                     <select  type="text" name="depart_time"  class="form-control" required>
                                       <option value="">--Select Depart Time--</option>
                                       <option selected value="<?php echo date("g:i A", strtotime( $trip->depart_time)); ?>"><?php echo date("g:i A", strtotime( $trip->depart_time)); ?></option>
-                                      <option value="4:00 AM">4:00 AM</option>
-                                      <option value="4:30 AM">4:30 AM</option>
-                                      <option value="5:00 AM">5:00 AM</option>
-                                      <option value="5:30 AM">5:30 AM</option>
-                                      <option value="6:00 AM">6:00 AM</option>
-                                      <option value="6:30 AM">6:30 AM</option>
-                                      <option value="4:00 AM">4:00 AM</option>
-                                      <option value="4:30 AM">4:30 AM</option>
-                                      <option value="5:00 AM">5:00 AM</option>
-                                      <option value="5:30 AM">5:30 AM</option>
-                                      <option value="6:00 AM">6:00 AM</option>
-                                      <option value="6:30 AM">6:30 AM</option>
-                                      <option value="7:00 AM">7:00 AM</option>
-                                      <option value="7:30 AM">7:30 AM</option>
-                                      <option value="8:00 AM">8:00 AM</option>
-                                      <option value="8:30 AM">8:30 AM</option>
-                                      <option value="9:00 AM">9:00 AM</option>
-                                      <option value="9:30 AM">9:30 AM</option>
-                                      <option value="10:00 AM">10:00 AM</option>
-                                      <option value="10:30 AM">10:30 AM</option>
-                                      <option value="11:00 AM">11:00 AM</option>
-                                      <option value="11:00 AM">11:30 AM</option>
-                                      <option value="12:00">12:00 AM</option>
-                                      <option value="12:30 AM">12:30 AM</option>
-                                      <option value="1:00 PM">1:00 PM</option>
-                                      <option value="1:30 PM">1:30 PM</option>
-                                      <option value="2:00 PM">2:00 PM</option>
-                                      <option value="2:30 PM">2:30 PM</option>
-                                      <option value="3:00 PM">3:00 PM</option>
-                                      <option value="3:30 PM">3:30 PM</option>
-                                      <option value="4:00 PM">4:00 PM</option>
-                                      <option value="4:30 PM">4:30 PM</option>
-                                      <option value="5:00 PM">5:00 PM</option>
-                                      <option value="5:30 PM">5:30 PM</option>
-                                      <option value="6:00 PM">6:00 PM</option>
-                                      <option value="6:30 PM">6:30 PM</option>
-                                      <option value="4:00 PM">4:00 PM</option>
-                                      <option value="4:30 PM">4:30 PM</option>
-                                      <option value="5:00 PM">5:00 PM</option>
-                                      <option value="5:30 PM">5:30 PM</option>
-                                      <option value="6:00 PM">6:00 PM</option>
-                                      <option value="6:30 PM">6:30 PM</option>
-                                      <option value="7:00 PM">7:00 PM</option>
-                                      <option value="7:30 PM">7:30 PM</option>
-                                      <option value="8:00 PM">8:00 PM</option>
-
+                                      <optgroup label="AM Trip Shcedule">
+                                        <option value="4:00 AM">4:00 AM</option>
+                                        <option value="4:30 AM">4:30 AM</option>
+                                        <option value="5:00 AM">5:00 AM</option>
+                                        <option value="5:30 AM">5:30 AM</option>
+                                        <option value="6:00 AM">6:00 AM</option>
+                                        <option value="6:30 AM">6:30 AM</option>
+                                        <option value="7:00 AM">7:00 AM</option>
+                                        <option value="7:30 AM">7:30 AM</option>
+                                        <option value="8:00 AM">8:00 AM</option>
+                                        <option value="8:30 AM">8:30 AM</option>
+                                        <option value="9:00 AM">9:00 AM</option>
+                                        <option value="9:30 AM">9:30 AM</option>
+                                        <option value="10:00 AM">10:00 AM</option>
+                                        <option value="10:30 AM">10:30 AM</option>
+                                        <option value="11:00 AM">11:00 AM</option>
+                                        <option value="11:00 AM">11:30 AM</option>
+                                      </optgroup>
+                                      <optgroup label="PM Trip Schdule">
+                                        <option value="12:00">12:00 PM</option>
+                                        <option value="12:30 AM">12:30 PM</option>
+                                        <option value="1:00 PM">1:00 PM</option>
+                                        <option value="1:30 PM">1:30 PM</option>
+                                        <option value="2:00 PM">2:00 PM</option>
+                                        <option value="2:30 PM">2:30 PM</option>
+                                        <option value="3:00 PM">3:00 PM</option>
+                                        <option value="3:30 PM">3:30 PM</option>
+                                        <option value="4:00 PM">4:00 PM</option>
+                                        <option value="4:30 PM">4:30 PM</option>
+                                        <option value="5:00 PM">5:00 PM</option>
+                                        <option value="5:30 PM">5:30 PM</option>
+                                        <option value="6:00 PM">6:00 PM</option>
+                                        <option value="6:30 PM">6:30 PM</option>
+                                        <option value="7:00 PM">7:00 PM</option>
+                                        <option value="7:30 PM">7:30 PM</option>
+                                        <option value="8:00 PM">8:00 PM</option>
+                                      </optgroup>
                                     </select>
                                   </div>
                                 </div>

@@ -31,8 +31,6 @@ $this->load->view('partials/ext_header');
             </div>
             <br>
 
-            <input type="text" name="contact_no" hidden value="<?php echo $data->contact_no; ?>">
-
             <div class="row" style="float: right;">
               <a style="margin-right: 10px" href="<?php echo base_url('user/login'); ?>" class="btn btn-secondary">Cancel</a>
               <button type="submit" class="btn btn-primary">Get Code</button>

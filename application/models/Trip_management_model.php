@@ -33,7 +33,6 @@ class trip_management_model extends CI_Model {
 		$query = $this->db->query("
 				SELECT * FROM trip
 				WHERE query_date_time < '$date'
-				
 				AND status = 'Pending'
 			");
 		return $query->result();
@@ -154,9 +153,12 @@ class trip_management_model extends CI_Model {
 	}
 
 	public function get_plate_no(){	
-		$id = $this->db->select('uv_id')->from('trip')->where('status !=', 'Arrived')->get()->result_array();
+		$id = $this->db->query("
+				SELECT uv_id FROM trip 
+				WHERE status = 'Traveling' OR status = 'Pending'
+			")->result_array();
 		$str = '0';
-		if (count($id) > 1) {
+		if (count($id) > 0) {
 			foreach ($id as $key => $value) {
 				if ($value['uv_id'] != '') {
 					$str = $str.','.$value['uv_id'];
@@ -167,34 +169,38 @@ class trip_management_model extends CI_Model {
 			SELECT plate_no, uv_id
 			FROM uv_unit 
 			WHERE uv_id  NOT IN ($str)
-				AND uv_unit.company_id = ". $this->session->userdata('company_id')
+			AND uv_unit.company_id = ". $this->session->userdata('company_id')
 		);
 		return $query->result();
 	}
 
 	public function get_driver(){			
-		$id = $this->db->select('driver_id')->from('trip')->get()->result_array();
+		$id = $this->db->query("
+				SELECT driver_id FROM trip 
+				WHERE status = 'Traveling' OR status = 'Pending'
+			")->result_array();
 		$str = '0';
-		if (count($id) > 1) {
+		if (count($id) > 0) {
 			foreach ($id as $key => $value) {
 				if ($value['driver_id'] != '') {
 					$str = $str.','.$value['driver_id'];
 				}
 			}
 		}
+
 		$query = $this->db->query("
 			SELECT distinct employee.* 
-			FROM employee, uv_unit
+			FROM employee
 			WHERE employee.role='driver' 
 				AND employee.employee_id NOT IN ($str)
-				AND uv_unit.company_id = ". $this->session->userdata('company_id')
+				AND employee.company_id = ". $this->session->userdata('company_id')
 			);
 		return $query->result();
 	}
 
 	public function modify_current_date($date = "", $hours = "", $minutes = "", $seconds = "") {
 		$new_date = new \DateTime($date);
-		$new_date->modify('+'.$hours.' hour +'.$minutes.' minutes +'.$seconds.' seconds');
+		$new_date->modify('-'.$hours.' hour -'.$minutes.' minutes -'.$seconds.' seconds');
 		return $new_date->format('Y-m-d H:i:s');
 	}
 

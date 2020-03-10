@@ -115,34 +115,51 @@ class user_model extends CI_Model {
 	public function get_account($username = "") {
 		$user = $this->db->get_where('user',['username'=>$username])->row();
 		if ($user != null) {
-			if ($user->role == 'owner') {
-				$table = 'company_owner';
-			} else {
-				$table = 'employee';
+			if ($user->role != 'driver') {
+				if ($user->role == 'owner') {
+					$table = 'company_owner';
+					} else {
+						$table = 'employee';
+				}
+				return $this->get_user($user->user_id, $table);
 			}
-			return $this->db->get_where($table, ['user_id'=>$user->user_id])->row();
 		} else {
 			return null;
 		}
+	}
+
+	public function get_user($user_id = "", $table = "") {
+		return $this->db->join($table, $table.'.user_id = user.user_id')->
+						where('user.user_id = '.$user_id)->
+						get('user')->row();
 	}
 
 	public function get_max_user_id() {
 		return $this->db->select('MAX(user_id) as max_id')->from('user')->get()->row()->max_id;
 	}
 
-	public function log_reset_code($code = "", $username = "") {
+	public function log_reset_code($code = "", $user_id = "") {
+		$code = sha1($code);
 		$data = [
 			'reset_id' => '',
-			'code' => sha1($code),
-			'username' => $username
+			'code' => $code,
+			'user_id' => $user_id
 		];
 		$this->db->insert('employee_reset_code', $data);
 		return $this->db->insert_id();
 	}
 
-	public function get_reset_code($id = "") {
-		return $this->db->get_where('employee_reset_code', ['reset_id'=>$id, 'code'=>sha1($_POST['code'])])->num_rows();
+	public function check_reset_code($id = "") {
+		$code = sha1($_POST['code']);
+		$res = $this->db->get_where('employee_reset_code', ['code'=>$code, 'reset_id'=>$id])->result_array();
+		return (count($res) > 0) ? true : false;
 	}
 
+	public function change_password($user_id = "") {
+		$data = ['password'=>sha1($_POST['password'])];
+		$this->db->where('user_id', $user_id)->
+					update('user', $data);
+
+	}
 
 }

@@ -4,7 +4,7 @@ $this->load->view('partials/ext_header');
             
             <div class="p-5" style="height: 300px">
                   <div class="text-center">
-	                  <form action="<?php echo base_url('user/verify_reset_code/'.$data['id']);?>" method="post">
+	                  <form action="<?php echo base_url('user/verify_reset_code/'.$data['reset_id'].'/'.$data['username']);?>" method="post">
 
 	                  	<p><strong>Password Reset Code</strong></p>
 
@@ -19,7 +19,7 @@ $this->load->view('partials/ext_header');
 	                    </div><br>
 
 	                    <p>Did'nt recieve a code?</p>
-	                    <a href="<?php echo base_url('user/enter_code/'.$data['username'].'/'.$data['contact_no']);?>">Send Again</a> <br><br>
+	                    <a href="<?php echo base_url('user/enter_code/'.$data['username']);?>">Send Again</a> <br><br>
 
 	                    <div class="form-group" style="float: right;">
 	                    	<a href="<?php echo base_url('user/login'); ?>" class="btn btn-secondary">Cancel</a>

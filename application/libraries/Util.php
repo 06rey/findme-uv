@@ -14,10 +14,8 @@ class Util {
 		);
 
 		$context  = stream_context_create($param);
-		//return file_get_contents($url, false, $context);
-
-		return true;
-	}
+		return file_get_contents($url, false, $context);
+}
 
 	public function generate_code($num) {
 		$len = strlen($num);

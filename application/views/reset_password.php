@@ -4,7 +4,7 @@ $this->load->view('partials/ext_header');
             
             <div class="p-5" style="height: 300px">
                   <div class="text-center">
-	                  <form action="<?php echo base_url('user/reset_password');?>" method="post">
+	                  <form action="<?php echo base_url('user/change_forgot_password/'.$user_id);?>" method="post">
 
 	                  	<p><strong>Reset Password</strong></p>
 
