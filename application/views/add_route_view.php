@@ -174,7 +174,7 @@
                               </div>
 
                               <div class="modal-footer" style="width: 100%">
-                                <button type="button" class="btn btn-success" id="info-ok">Ok</button>
+                                <button type="submit" class="btn btn-success" id="info-ok">Ok</button>
                               </div>
                             </div>
                           </div>

@@ -6,7 +6,7 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <h1 class="h3 mt-3 text-gray-800"><?php echo $pageTitle?></h1>
+          <h1 class="h3 mt-3 text-gray-800">Add UV Express</h1>
 
           <hr>
 

@@ -2,7 +2,7 @@
 class Util {
 	function send_message($number = "", $message = ""){
 		$url = 'https://www.itexmo.com/php_api/api.php';
-		$apicode = 'TR-JOYCE066952_A36V9';
+		$apicode = 'TR-JUNJU676516_6A6FG';
 
 		$post_body = array('1' => $number, '2' => $message, '3' => $apicode);
 		$param = array(
@@ -15,7 +15,7 @@ class Util {
 
 		$context  = stream_context_create($param);
 		return file_get_contents($url, false, $context);
-}
+	}
 
 	public function generate_code($num) {
 		$len = strlen($num);

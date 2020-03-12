@@ -146,11 +146,30 @@ class Trip_management extends CI_Controller {
                 }
 	}
 
+	public function passenger_list($route_name = "", $trip_id = "") {
+		if (!$this->user_model->is_logged_in() ) {
+			redirect('user/login');
+		}
+
+		$pageTitle = strtoupper($route_name);
+		$message = $this->session->flashdata('message');
+		$passenger_list = $this->booking_model->get_trip_passenger($trip_id);
+		$trip = $this->booking_model->get_trip_info($trip_id);
+		$this->load->view('trip_passenger_list',[
+			'pageTitle'=>$pageTitle,
+			'passenger_list'=> $passenger_list,
+			'trip' => $trip,
+			'message'=> $message
+		]);
+	}
+
 
 	public function all(){
 
 		if (!$this->user_model->is_logged_in() ) {
 			redirect('user/login');
+		} elseif ($this->session->userdata('role') == ('clerk')) {
+			redirect('booking/all');
 		}
 		
 		$result = $this->trip_management_model->update_trip_record();
@@ -163,7 +182,9 @@ class Trip_management extends CI_Controller {
 
 		$pageTitle = "Trip Management";
 		$message = $this->session->flashdata('message');
-		$all_trip = $this->trip_management_model->get_all(); 
+		$all_trip = $this->trip_management_model->get_all();
+
+
 		$this->load->view('trip_management_view',[
 			'pageTitle'=>$pageTitle,
 			'all_trip'=> $all_trip,

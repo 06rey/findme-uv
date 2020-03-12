@@ -146,8 +146,8 @@
                       <td><?php echo $passenger->contact_no; ?></td>
                       <td class="text-center">
 
-                          <a class="text-danger" style="font-weight: bold" title="Book Passenger" href="<?php echo base_url('booking/removePassenger/'.$trip->route_name.'/'.$trip->trip_id.'/'.$passenger->booking_id.'/'.$passenger->seat_id); ?>">
-                            <i class="fa fa-times"></i> Cancel
+                          <a class="text-danger delete" style="font-weight: bold" title="Book Passenger" href="#" id="<?php echo base_url('booking/removePassenger/'.$trip->route_name.'/'.$trip->trip_id.'/'.$passenger->booking_id.'/'.$passenger->seat_id); ?>">
+                            <i class="fa fa-trash"></i> Remove
                           </a>
 
                       </td>
@@ -870,10 +870,10 @@
             //queue_id = Object.entries(JSON.parse(this.responseText))[0][1];
             stat = true;
             initVar();
+            alert("Successfully save reservation.");
         }
         isModalOpen = false;
         location.reload();
-        alert("Successfully save reservation.");
     };
     xhttp.send(formData);
   }

@@ -45,6 +45,31 @@
 
 $('.filtered').ddTableFilter(); // Drop down column table header
 
+// Document ready
+$(document).ready(function(){
+
+  // Delete record callback
+  $('.delete').click(function(){
+    link = this.id
+    if (confirm("Are you sure you want to delete record?")) {
+      window.location.replace(link);
+    }
+  });
+
+  $('.msg').click(function(){
+    msg = this.id;
+    $('.p-msg').text(msg);
+    $('#modal-msg').modal('show');
+  });
+
+  $('#modal-msg-close').click(function(){
+    $('#modal-msg').modal('toggle');
+  });
+  
+
+//Documnet ready end
+});
+
 </script>
 
 

@@ -48,12 +48,6 @@
                               <input type="text" name="l_name" id="l_name"  class="form-control" value="<?php echo $employee->l_name; ?>" required>
                             </div>
                           </div>
-
-                           <div class="form-group" style="display: none;">
-                            <div class="col-sm-8">
-                              <input type="text" name="license_no" id="license_no"  class="form-control" value="<?php echo $employee->license_no; ?>" required>
-                            </div>
-                          </div>
   
 
                           <div class="form-group">
@@ -89,8 +83,8 @@
                                   <div class="col-sm-8">
                                     <select type="text" name="status" id="head"  class="form-control" <?php echo $status; ?>>
                                       <option value="">--Select Status--</option>
-                                      <option <?php echo $active; ?> value="ACTIVE">ACTIVE</option>
-                                      <option <?php echo $inactive; ?> value="INACTIVE">INACTIVE</option>
+                                      <option <?php echo $active; ?> value="1">ACTIVE</option>
+                                      <option <?php echo $inactive; ?> value="0">INACTIVE</option>
                                     </select>
                                   </div>
                                 </div>

@@ -52,7 +52,7 @@
       <?php 
         $role = $this->session->userdata('role');
         if ($role == 'admin' || $role == 'owner')
-      :?>
+      { ?>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
@@ -96,7 +96,7 @@
       <li class="nav-item">
         <a class="nav-link" href="<?php echo base_url();?>uv_unit/all">
           <i class="fas fa-fw fa-bus"></i>
-          <span>UV Units</span></a>
+          <span>UV Express</span></a>
       </li>
 
 
@@ -110,13 +110,32 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url();?>employee/driver">Drivers</a>
             <a class="collapse-item" href="<?php echo base_url();?>employee/clerk">Clerks</a>
-            
           </div>
         </div>
       </li>
 
-      <?php elseif ($role == 'clerk') : ?>
-    
+       <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-toggle="collapse" data-target="#log-panel" aria-expanded="true" aria-controls="collapsePages">
+          <i class="fas fa-fw fa-list"></i>
+          <span>Logs</span>
+        </a>
+        <div id="log-panel" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="<?php echo base_url();?>logs/all">Activiy</a>
+            <a class="collapse-item" href="<?php echo base_url();?>logs/get_accident">Acciddent</a>
+            <a class="collapse-item" href="<?php echo base_url();?>logs/get_over_speed">Over Speed</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<?php echo base_url('logs/get_feedback');?>">
+          <i class="fas fa-fw fa-info"></i>
+          <span>Feedback</span></a>
+      </li>
+
+      <?php } elseif ($role == 'clerk') { ?>
 
            <!-- Nav Item - Bookings -->
       <li class="nav-item">
@@ -125,10 +144,7 @@
           <span>Bookings</span></a>
       </li>
 
-
-      <?php else: ?>
-
-      <?php endif?>
+      <?php } ?>
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
@@ -185,10 +201,6 @@
                 <a class="dropdown-item" href="#">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
-                </a>
-                <a class="dropdown-item" href="<?php echo base_url();?>logs/all">
-                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">

@@ -104,6 +104,8 @@
                       <th>To</th>
                       <th>Date</th>
                       <th>Departure Time</th>
+                      <th>Driver</th>
+                      <th>Plate No</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -114,6 +116,8 @@
                       <th>to</th>
                       <th>Date</th>
                       <th>Departure Time</th>
+                      <th>Driver</th>
+                      <th>Plate No</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -127,7 +131,8 @@
                        
                         <td><?php echo $trip->date?></td>
                         <td><?php echo date("g:i A", strtotime($trip->depart_time)) ?></td>
-
+                        <td><?=$trip->f_name ." ". $trip->l_name?></td>
+                        <td><?=$trip->plate_no?></td>
                         <?php
                           $stat_color = 'black';
                           if ($trip->status == "Arrived") {
@@ -152,6 +157,9 @@
 
                           <a class="text-success" style="display: <?php echo $hidden; ?>" href="<?php echo base_url('trip_management/update_trip/'.$trip->trip_id);?>" title="Update Trip" >
                             <i class="fa fa-edit"></i> Update
+                          </a>
+                          <a class="text-info"  href="<?php echo base_url('trip_management/passenger_list/'.$trip->route_name.'/'.$trip->trip_id);?>" title="Passenger List" >
+                            <i class="fa fa-edit"></i> Passenger List
                           </a>
 
                         </td>

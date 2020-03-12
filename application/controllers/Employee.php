@@ -255,7 +255,7 @@ class Employee extends CI_Controller {
 		]);
 	}
 	public function edit_driver_validation($id = "", $user_id = "")
-	{	   
+	{	  
 
 		$this->load->library('form_validation');
 
@@ -334,7 +334,7 @@ class Employee extends CI_Controller {
 		]);
 	}
 	public function edit_clerk_validation($id = "", $user_id = "")
-	{	   
+	{	  
 
 		$this->load->library('form_validation');
 

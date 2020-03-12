@@ -84,7 +84,6 @@ class employee_model extends CI_Model {
 
 	public function edit($id = "",  $user_id = "")
 	{
-
 		$employee = [
 			'f_name' => $this->input->post('f_name',true),
 			'm_name' => $this->input->post('m_name',true),

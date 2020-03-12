@@ -22,7 +22,7 @@
                 <span class="icon text-white-50">
                   <i class="fas fa-plus-circle"></i>
                 </span>
-                <span class="text">Add UV-Unit</span>
+                <span class="text">Add UV Express</span>
               </a>
 
             </div>

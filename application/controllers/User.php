@@ -182,7 +182,8 @@ class User extends CI_Controller {
 		$pageTitle = "Password Reset Code";
 		$code = $this->util->generate_code($this->user_model->get_max_user_id());
 		$message = $this->session->flashdata('message');
-		if ($this->util->send_message($user->contact_no, $code)) {
+		$msg = "$code is your FIND ME UV password reset code";
+		if ($this->util->send_message($user->contact_no, $msg) == 0) {
 
 			$id = $this->user_model->log_reset_code($code, $user->user_id);
 			$data = ['reset_id'=>$id,'username'=>$user->username];
