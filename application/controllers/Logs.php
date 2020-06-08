@@ -3,167 +3,238 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Logs extends CI_Controller {
 
-	public function all()
-	{
+	private function checkUser(){
 		if (!$this->user_model->is_logged_in() ) {
 			redirect('user/login');
 		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
+			redirect('booking');
 		}
-
-		$pageTitle = "Activity Logs";
-		$all_logs = $this->log_model->get_log();
-
-
-		$this->load->view('get_all_logs_view',[
-			'pageTitle'=>$pageTitle,
-			'all_logs'=> $all_logs
-		]);
 	}
 
-	public function get_over_speed() {
-		if (!$this->user_model->is_logged_in() ) {
-			redirect('user/login');
-		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
-		}
+	/*
+	|--------------------------------------------------------------------------
+	| OVER SPEED
+	|--------------------------------------------------------------------------
+	*/
 
-		$pageTitle = "Drigver's Over Speed Logs";
-		$all_logs = $this->log_model->get_all_over_speed();
-
-		//echo "<pre>";
-		//print_r($all_logs);die();
-
+	// View
+	public function over_speed() {
+		$this->checkUser();
 		$this->load->view('over_speed_log',[
-			'pageTitle'=>$pageTitle,
-			'all_logs'=> $all_logs
+			'pageTitle'=>"Driver Over Speed",
 		]);
 	}
 
-	public function get_accident() {
-		if (!$this->user_model->is_logged_in() ) {
-			redirect('user/login');
-		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
+	public function overSpeedLogs(){
+		echo json_encode([
+			'data' => $this->log_model->get_all_over_speed()
+		]);
+	}
+	/*
+	|--------------------------------------------------------------------------
+	| USER ACTIVITY
+	|--------------------------------------------------------------------------
+	*/
+
+	// View
+	public function userActivity(){
+		$this->checkUser();
+		$this->load->view('user_activity',[
+			'pageTitle'=>"User Activity"
+		]);
+	}
+
+	public function getAllLogs(){
+		echo json_encode([
+			'data' => $this->log_model->get_log()
+		]);
+	}
+
+	public function accountActivity(){
+		$data = $this->log_model->fetchAccountActivity();
+		$lastId = 0;
+		if ($data){
+			$lastId = $data[count($data) - 1][count($data[count($data) - 1]) - 1]->id;
 		}
-
-		$pageTitle = "UV Express Acccident Logs";
-		$all_logs = $this->log_model->get_all_accident();
-
-		$this->load->view('accident_log',[
-			'pageTitle'=>$pageTitle,
-			'all_logs'=> $all_logs
+		echo json_encode([
+			'lastId' => $lastId,
+			'count' => $this->log_model->countActivity($lastId),
+			'data' => $data
 		]);
-	}
-
-	public function contact_list() {
-		if (!$this->user_model->is_logged_in() ) {
-			redirect('user/login');
-		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
-		}
-
-		$pageTitle = "Trip Acccident Logs";
-		$all_contact = $this->log_model->get_all_alert_contact();
-
-		//echo "<pre>";
-		//print_r($all_contact);die();
-		$message = $this->session->flashdata('message');
-		$this->load->view('accident_contact_list',[
-			'pageTitle'=>$pageTitle,
-			'message' => $message,
-			'all_contact'=> $all_contact
-		]);
-	}
-
-	public function update_contact($id) {
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('contact_name', 'Contact Name', 'required');
-		$this->form_validation->set_rules('contact_no', 'Contact Number', 'required');
-		if ($this->form_validation->run() == FALSE){
-            $message = [
-                'type' => 'danger',
-                'message' => validation_errors()	
-            ];
-            $this->session->set_flashdata('message', $message);
-        } else {
-        	$this->log_model->update_contact($id);
-        	$this->log_model->log("Updated accident alert contact");
-        	$message = [
-        		'type' => 'success',
-        		'message' => 'Successfully Update Accident Contact!'
-                ];
-            $this->session->set_flashdata('message', $message);
-        }
-        redirect('logs/contact_list');
-	}
-
-	public function add_contact() {
-		$this->load->library('form_validation');
-		$this->form_validation->set_rules('contact_name', 'Contact Name', 'required');
-		$this->form_validation->set_rules('contact_no', 'Contact Number', 'required');
-		if ($this->form_validation->run() == FALSE){
-            $message = [
-                'type' => 'danger',
-                'message' => validation_errors()	
-            ];
-            $this->session->set_flashdata('message', $message);
-        } else {
-        	$this->log_model->add_contact();
-        	$this->log_model->log("Added accident alert contact");
-        	$message = [
-        		'type' => 'success',
-        		'message' => 'Successfully Added Accident Contact!!'
-                ];
-            $this->session->set_flashdata('message', $message);
-        }
-        redirect('logs/contact_list');
 	}
 	
-	public function remove_contact($id) {
-		$this->log_model->remove_contact($id);
-		$this->log_model->log("Deleted accident alert contact");
-       	$message = [
-        		'type' => 'success',
-        		'message' => 'Successfully Remove Accident Alert Contact!!'
-                ];
-        $this->session->set_flashdata('message', $message);
-        redirect('logs/contact_list');
+	/*
+	|--------------------------------------------------------------------------
+	| ACCIDENT LOG
+	|--------------------------------------------------------------------------
+	*/
+
+	public function allAccident() {
+		$this->checkUser();
+		$this->load->view('accident_log',[
+			'pageTitle'=>"Acccident Logs",
+			'all_logs'=> $this->log_model->get_all_accident(),
+			'route' => $this->log_model->getRoute()
+		]);
 	}
 
-	public function get_feedback() {
-		if (!$this->user_model->is_logged_in() ) {
-			redirect('user/login');
-		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
+	public function allContact() {
+		echo json_encode([
+			'data' => $this->log_model->get_all_alert_contact()
+		]);
+	}
+
+	public function saveContact(){
+		
+		echo json_encode([
+			'data' => $this->log_model->saveEmergencyContact() > 0 ? true : false
+		]);
+	}
+
+	public function contactStatus(){
+		echo json_encode([
+			'data' => $this->log_model->setContactStatus() > 0 ? true : false
+		]);
+	}
+
+	public function updateContact(){
+		echo json_encode([
+			'data' => $this->log_model->updateContact() > 0 ? true : false
+		]);
+	}
+
+	public function deleteContact(){
+		echo json_encode([
+			'data' => $this->log_model->deleteContact() > 0 ? true : false
+		]);
+	}
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| FEEDBACK
+	|--------------------------------------------------------------------------
+	*/
+
+	public function get_feedback($limit) {
+		$this->checkUser();
+		$data = $this->log_model->get_all_feedback($limit);
+		$last_id = 0;
+		if ($data){
+			$last_id = $data[count($data) - 1]->feedback_id;
 		}
 
-		$pageTitle = "Feedback";
-		$all_feedback = $this->log_model->get_all_feedback();
-
-		//echo "<pre>";
-		//print_r($all_feedback);die();
-
-		$message = $this->session->flashdata('message');
 		$this->load->view('feedback',[
-			'pageTitle'=>$pageTitle,
-			'message' => $message,
-			'all_feedback'=> $all_feedback
+			'pageTitle'=>'Feedback',
+			'last_id' => $last_id,
+			'count' => $this->log_model->count_feedback($last_id, ''),
+			'all_feedback'=> $data
+		]);
+	}
+
+	public function loadMoreFeedBack(){
+		$data = $this->log_model->loadMoreFeedBack();
+		$last_id = 0;
+		if (COUNT($data) > 0){
+			$last_id = $data[count($data) - 1]->feedback_id;
+
+			foreach ($data as $key => $value) {
+				$data[$key]->reply_count = $this->log_model->countFeedbackReply($value->feedback_id);
+			}
+		}
+		echo json_encode([
+			'status' => COUNT($data) > 0 ? true : false,
+			'data' => $data,
+			'last_id' => $last_id,
+			'count' => $this->log_model->count_feedback($last_id, $_POST['filter'])
+		]);
+	}
+
+	public function syncFeedback(){
+		$data = $this->log_model->fetchLatestFeedback();
+		if (COUNT($data) > 0){
+			foreach ($data as $key => $value) {
+				$data[$key]->reply_count = $this->log_model->countFeedbackReply($value->feedback_id);
+			}
+		}
+		echo json_encode([
+			'status' => count($data) > 0 ? true : false,
+			'data' => $data
+		]);
+	}
+
+	public function getFeedback(){
+		$data = $this->log_model->fetchLatestFeedback($_POST['feedback_id'], $_POST['filter']);
+		if (COUNT($data) > 0){
+			$last_id = $data[count($data) - 1]->feedback_id;
+
+			foreach ($data as $key => $value) {
+				$data[$key]->reply_count = $this->log_model->countFeedbackReply($value->feedback_id);
+			}
+		}
+		echo json_encode([
+			'status' => COUNT($data) > 0 ? true : false,
+			'data' => $data,
+			'count' => $this->log_model->count_feedback($_POST['feedback_id'], $_POST['filter'])
+		]);
+	}
+
+	public function feedbackReply(){
+		$data = $this->log_model->fetchReply($_POST['feedback_id']);
+		if (count($data) > 0){
+			foreach ($data as $key => $value) {
+				$sender = $this->log_model->fetchSender($value->sender_type, $value->sender_id);
+				$data[$key]->sender = $sender->name;
+				if (isset($sender->img_url)){
+					$data[$key]->img_url = $sender->img_url;
+				}else{
+					$data[$key]->img_url = '';
+				}
+			}
+		}
+		echo json_encode([
+			'data' => $data
+		]);
+	}
+
+	public function syncReply(){
+		if ($_POST['idLen'] > 0){
+			$ids = json_decode($_POST['replyIds']);
+			$notIn = '(0';
+			foreach ($ids as $key => $value) {
+				$notIn .= ','.$value;
+			}
+			$notIn .= ')';
+			$data = $this->log_model->fetchLatestReply($notIn);
+			echo json_encode([
+				'status' => count($data) > 0 ? true : false,
+				'type' => 'data',
+				'data' => $data
+			]);
+		}else{
+			echo json_encode([
+				'type' => 'count',
+				'data' => $this->log_model->countFeedbackReply($_POST['id'])
+			]);
+		}
+	}
+
+	public function sendReply(){
+		$data = $this->log_model->saveReply();
+		$data[0]->{'sender'} = $data[0]->f_name.' '.$data[0]->l_name;
+		echo json_encode([
+			'data' => $data
 		]);
 	}
 
 	public function delete_feedback($id) {
 		$this->log_model->delete_feedback($id);
 		$this->log_model->log("Deleted passenger's feedback");
-       	$message = [
-        		'type' => 'success',
-        		'message' => 'Successfully deleted feedback!'
-                ];
-        $this->session->set_flashdata('message', $message);
-        redirect('logs/get_feedback');
+   	$message = [
+    		'type' => 'success',
+    		'message' => 'Successfully deleted feedback!'
+            ];
+    $this->session->set_flashdata('message', $message);
+    redirect('logs/get_feedback');
 	}
-
 }
-
-
-

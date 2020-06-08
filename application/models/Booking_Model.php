@@ -9,12 +9,6 @@ class Booking_Model extends CI_Model {
 		date_default_timezone_set('Asia/Manila');
 	}
 
-	//----------------------------------------------------------------------------------------
-	//----------------------------------------------------------------------------------------
-	//---------------------------------------- GETTERS ---------------------------------------
-	//----------------------------------------------------------------------------------------
-	//----------------------------------------------------------------------------------------
-	
 	public function get_all(){	
 		$query = $this->db->get('booking');
 		return $query->result();
@@ -81,11 +75,60 @@ class Booking_Model extends CI_Model {
 	}
 
 
-	//----------------------------------------------------------------------------------------
-	//----------------------------------------------------------------------------------------
-	//------------------------------- BOOKING SEAT FUNCTIONS ---------------------------------
-	//----------------------------------------------------------------------------------------
-	//----------------------------------------------------------------------------------------
+	/*
+	|--------------------------------------------------------------------------
+	| BOOKING MODELS
+	|--------------------------------------------------------------------------
+	*/
+	
+	# 1 
+	public	function insert_booking_queue($no_of_pass, $trip_id) {
+		$data = array(
+					"queue_id" => "", 
+					"no_of_pass" => $no_of_pass, 
+					"status" => "Terminal", 
+					"time_stamp" => date("Y-m-d H:i:s"),
+					"trip_id" => $trip_id
+				);
+		$this->db->insert("booking_queue", $data);
+		return $this->db->insert_id();
+	}
+	# 2
+	public function get_allocated_seat($trip_id = "", $queue_id = "") {
+		$res = $this->db->query("
+			SELECT seat.seat_no FROM trip 
+			INNER JOIN booking ON trip.trip_id = booking.trip_id
+			INNER JOIN seat ON booking.booking_id = seat.booking_id
+			WHERE trip.trip_id = ".$trip_id
+		)->result_array();
+
+		$res2 = $this->db->query("
+			SELECT selected_seat.selected_seat_no FROM selected_seat
+				INNER JOIN booking_queue ON selected_seat.queue_id = booking_queue.queue_id
+				INNER JOIN trip ON booking_queue.trip_id = trip.trip_id
+				WHERE trip.trip_id = ".$trip_id." 
+				AND booking_queue.status != 'expired' 
+				AND booking_queue.queue_id != ".$queue_id
+		)->result_array();
+		$temp = 0;
+		$a = 1;
+		if (COUNT($res) > 0) {
+			foreach ($res as $key => $value) {
+				$result[0]["seat".$a] = $value["seat_no"];
+				$a++;
+			}
+		}
+		if (COUNT($res2) > 0) {
+			foreach ($res2 as $key => $val) {
+				$result[0]["seat".$a] = $val["selected_seat_no"];	
+				$a++;
+			}
+		}
+		if ($a == 1){
+			return [];
+		}
+		return $result;
+	}
 
 	// Return number of available seat of a trip
 	public function get_available_seat($trip_id) {
@@ -105,74 +148,34 @@ class Booking_Model extends CI_Model {
 		return $booked + $allocated;
 	}
 
-	public function removeReservedSeat($booking_id = "", $seat_id = "") {
-		$this->db->delete('seat', array('seat_id' => $seat_id));
+	// public function cancelReservation(){
+	// 	$this->db->delete('seat', ['seat_id'=>$_POST['seat_id']]);
+	// 	return $this->db->affected_rows();
+	// }
+
+	public function cancelReservation() {
+		$data = json_decode($this->log_model->getReservation($_POST['seat_id']));
+		$this->log_model->log([
+			'activity' => 'Cancelled seat reservation for '.$data->full_name.'.',
+			'data' 		 => $this->log_model->getReservation($_POST['seat_id']),
+			'table'		 => 'seat',
+			'ref_id'   => $_POST['seat_id']
+		]);
+		$this->db->delete('seat', array('seat_id' => $_POST['seat_id']));
 		$count = $this->db->select('count(*) as count')->
 							from('seat')->
-							where('booking_id', $booking_id)->
+							where('booking_id', $data->booking_id)->
 							get()->row()->count;
 		if ($count < 1) {
-			$this->db->delete('booking', array('booking_id' => $booking_id));
+			$this->db->delete('booking', array('booking_id' => $data->booking_id));
 		}
-		return $count;//$this->db->affected_rows();
+		return $this->db->affected_rows();
 	}
-
-	public	function insert_booking_queue($no_of_pass, $trip_id) {
-			$sql = "INSERT INTO booking_queue";
-			$data = array(
-						"queue_id" => "", 
-						"no_of_pass" => $no_of_pass, 
-						"status" => "Terminal", 
-						"time_stamp" => date("Y-m-d H:i:s"),
-						"trip_id" => $trip_id
-					);
-			$this->db->insert("booking_queue", $data);
-			return array("queue_id" => $this->db->insert_id());
-		}
-
-	public function get_allocated_seat($trip_id = "", $queue_id = "") {
-			$res = $this->db->query("
-				SELECT seat.seat_no FROM trip 
-				INNER JOIN booking ON trip.trip_id = booking.trip_id
-				INNER JOIN seat ON booking.booking_id = seat.booking_id
-				WHERE trip.trip_id = ".$trip_id
-			)->result_array();
-
-			$res2 = $this->db->query("
-				SELECT selected_seat.selected_seat_no FROM selected_seat
-					INNER JOIN booking_queue ON selected_seat.queue_id = booking_queue.queue_id
-					INNER JOIN trip ON booking_queue.trip_id = trip.trip_id
-					WHERE trip.trip_id = ".$trip_id." 
-					AND booking_queue.status != 'expired' 
-					AND booking_queue.queue_id != ".$queue_id
-			)->result_array();
-			$temp = 0;
-			$a = 1;
-			if (COUNT($res) > 0) {
-				foreach ($res as $key => $value) {
-					$result[0]["seat".$a] = $value["seat_no"];
-					$a++;
-				}
-			} else {
-				$temp++;
-			}
-			if (COUNT($res2) > 0) {
-				foreach ($res2 as $key => $val) {
-					$result[0]["seat".$a] = $val["selected_seat_no"];	
-					$a++;
-				}
-			} else {
-				$temp++;
-			}
-			if ($temp > 1) {
-				$result = array("message"=>"no result");
-			}
-			return $result;
-		}
 
 	public	function delete_seat($seat_no, $queue_id) {
 		$sql = "DELETE FROM selected_seat WHERE selected_seat_no = ".$seat_no." AND queue_id = ".$queue_id;
 		$this->db->query($sql);
+		return $this->db->affected_rows();
 	}
 
 	public	function insert_seat($seat_no, $queue_id, $trip_id) {
@@ -191,9 +194,9 @@ class Booking_Model extends CI_Model {
 			if ($available) {
 				$sql = "INSERT INTO selected_seat VALUES(select_id, ".$seat_no.", ".$queue_id.")";
 				$this->db->query($sql);
-				return array("available"=>"true");
+				return true;
 			} else {
-				return array("available"=>"false");
+				return false;
 			}
 		}
 
@@ -210,7 +213,7 @@ class Booking_Model extends CI_Model {
 		$data = array(
 				"booking_id" => "",
 				"no_of_passenger" => $this->input->post("no_of_pass", true),
-				"amount" => $this->input->post("amount", true),
+				"amount" => 0,
 				"pass_type" => "Terminal",
 				"time_stamp" => date("Y-m-d H:i:s"),
 				"notes" => "",
@@ -235,7 +238,14 @@ class Booking_Model extends CI_Model {
 				"booking_id" => $id
 			);
 			$this->db->insert("seat", $data);
+			$seat_id = $this->db->insert_id();
+			$this->log_model->log([
+				'activity' => 'Added seat reservation for '.$data['full_name'].'.',
+				'data' 		 => $this->log_model->getReservation($seat_id),
+				'table'		 => 'seat',
+				'ref_id'   => $seat_id
+			]);
 		}
-
+		return $this->db->insert_id();
 	}
 }

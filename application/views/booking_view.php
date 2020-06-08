@@ -1,64 +1,49 @@
-<?php $this->load->view('partials/header');
+<?php $this->load->view('partials/header');?>
+  <!-- Begin Page Content -->
+  <div class="container-fluid" id="app">
+    <!-- Page Heading -->
+    <h1 class="h3 mt-3 text-gray-800"><?php echo $pageTitle?></h1>
+    <hr>
 
-//echo "<pre>";
+    <input type="text" class="form-control mb-3" name="" placeholder="Search" id="searchRoute">
 
-//print_r($all_trip);
+    <div class="row justify-content-center mt-5 mb-5 w-100 d-none" id="noResult">
+      <h4>No result found</h4>
+    </div>
 
-?>
-
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <h1 class="h3 mt-3 text-gray-800"><?php echo $pageTitle?></h1>
-          <hr>
-
-            <?php if (!empty($message)):?>
-              <div class="alert alert-<?php echo $message['type'] ?>">
-                <?php echo $message['message'] ?>
+    <!-- Content Row -->
+    <div class="row" id="routeList">
+    <?php foreach ($routes as $route) : ?>
+      <div class="col-lg-4 mb-4 route">
+        <div class="card shadow h-100 ">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2 place">
+                <h5>
+                  <li class="fa fa-map-pin fa-fw"></li>
+                  <?=$route->origin?>
+                </h5>
+                <h5>
+                  <li class="fa fa-map-marker fa-fw"></li>
+                  <?=$route->destination?>
+                </h5>
               </div>
-            <?php endif ?>
-
-            <div class="row">
-
-              <?php
-
-                if ($all_trip == null) :?>
-                  <br><br>
-                  <h3 style="margin: auto;">No trip schedule found</h3>
-                <?php endif;
-
-                foreach ($all_trip as $key => $trip) :?>
-
-                  <div class="col-xl-4 mb-4">
-                    <div class="card border-left-info shadow h-100 ">
-                      <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                          <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-0">
-                              <a style="font-weight: bold; text-align: left;" href="<?php echo base_url('booking/route_trip/'.$trip->route_name.'/'.$trip->route_id);?>" class="btn btn-default link">
-                                <?php echo $trip->route_name; ?>
-                              </a>
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800" style="margin-left: 15px">
-                              <?php echo  $trip->count; ?>  
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
             </div>
-
+          </div>
+          <div class="card-footer">
+            <a href="<?= base_url('booking/trip/'.$route->route_id.'/'.date('Y-m-d')) ?>" class="" id="<?= $route->route_id ?>">
+              <i class="fa fa-calendar fa-fw fa-sm text-gray-400"></i>
+              Trip Schedule
+              <span class="font-weight-bold badge badge-info text-white tripCount">0</span>
+            </a>
+          </div>
         </div>
-        <!-- /.container-fluid -->
-
       </div>
-      <!-- End of Main Content -->
-
-  <?php $this->load->view('partials/footer');?>
-
-
-
+    <?php endforeach; ?>
+    </div>
+  </div>
+  <!-- End container-fluid -->
+</div>
+<!-- End of Main Content -->
+<?php $this->load->view('partials/footer');?>
+<script type="text/javascript" src="<?= base_url('assets/js/app/booking.js') ?>"></script>

@@ -1,6 +1,98 @@
 // Topbar
+
+.toast-container{
+  position: fixed; 
+  top: 0;
+  right: 0;
+  z-index: 10000;
+  max-height: 600px;
+}
+.toast{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+  margin: 20px 20px 0px 0px;
+  border: none;
+  padding: 0px;
+  color: white;
+
+  animation-name: zoom-in;
+  animation-duration: 0.2s;
+  animation-timing-function: ease-in;
+
+  .toast-content-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    max-width: 250px;
+
+    .toast-body-container{
+      width: 100%;
+      margin-right: 0px;
+    }
+  }
+
+  .icon{
+    height: 40px;
+    width: 40px;
+    margin: auto 10px auto 20px;
+  }
+
+  .toast-header{
+    color: white;
+    border: none;
+    font-weight: bold;
+    opacity: 1;
+    padding: 15px 15px 0px 10px;
+    width: 100%;
+    background: transparent;
+  }
+  .toast-body{
+    color: white;
+    opacity: 1;
+    width: 100%;
+    padding: 0px 15px 15px 10px;
+  }
+  button{
+    font-weight: lighter;
+    font-size: 16px;
+    margin-top: 0px;
+    span{
+      color: white;
+    }
+    &:hover{
+      color: white;
+    }
+  }
+}
+
+#content-wrapper{
+  margin-left: $sidebar-base-width;
+  margin-top: 60px;
+}
+.loading-container{
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: fixed;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+
+  .loading{
+    height: 40px;
+    width: 40px;
+  }
+}
 .topbar {
-  height: $topbar-base-height;
+  height: 60px;
+  top: 0;
+  right: 0;
+  left: 0;
+  position: fixed;
+  z-index: 1;
+  margin-left: $sidebar-base-width;
   #sidebarToggleTop {
     height: 2.5rem;
     width: 2.5rem;

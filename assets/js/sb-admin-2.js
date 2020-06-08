@@ -1,10 +1,17 @@
 (function($) {
   "use strict"; // Start of use strict
 
+
+  $('#content-wrapper').css('margin-left', $('.sidebar').width()+ 'px');
+  $('.topbar').css('margin-left', $('.sidebar').width()+ 'px');
+
   // Toggle the side navigation
   $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
+    $('#content-wrapper').css('margin-left', $('.sidebar').width()+ 'px');
+    $('.topbar').css('margin-left', $('.sidebar').width()+ 'px');
+
     if ($(".sidebar").hasClass("toggled")) {
       $('.sidebar .collapse').collapse('hide');
     };
@@ -12,6 +19,8 @@
 
   // Close any open menu accordions when window is resized below 768px
   $(window).resize(function() {
+    $('.topbar').css('margin-left', $('.sidebar').width()+ 'px');
+    $('#content-wrapper').css('margin-left', $('.sidebar').width()+ 'px');
     if ($(window).width() < 768) {
       $('.sidebar .collapse').collapse('hide');
     };

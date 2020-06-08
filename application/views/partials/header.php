@@ -16,24 +16,30 @@
   
 
   <!-- Custom styles for this template-->
-  <link href="<?php echo base_url();?>assets/css/fmu.css" rel="stylesheet">
   <link href="<?php echo base_url();?>assets/css/sb-admin-2.css" rel="stylesheet">
-
+  <link href="<?php echo base_url();?>assets/css/jquery-confirm.min.css" rel="stylesheet">
+  <link href="<?php echo base_url();?>assets/css/jquery-ui.css" rel="stylesheet">
   <!-- Custom styles for this page -->
   <link href="<?php echo base_url();?>assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
-  
-
-
- 
+  <link href="<?php echo base_url();?>assets/css/fmu.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="<?=base_url('assets/css/bootstrap-select.min.css')?>">
 
 </head>
 
-<body id="page-top">
+<body class="no-scroll" id="page-top">
 
   <!-- Page Wrapper -->
-  <div id="wrapper">
+  <div class="h-100" id="wrapper">
 
+    <!-- Loading -->
+  <div class="loading-container">
+    <!-- <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div> -->
+    <div class="dot-loading text-primary dot-4">
+      <span></span>
+    </div>
+  </div>
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -49,6 +55,7 @@
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
+      <!-- If admin or owner -->
       <?php 
         $role = $this->session->userdata('role');
         if ($role == 'admin' || $role == 'owner')
@@ -72,29 +79,29 @@
 
       <!-- Nav Item - Trip Management -->
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url();?>booking/all">
+        <a class="nav-link" href="<?= base_url('booking') ?>">
           <i class="fas fa-fw fa-book"></i>
-          <span>Bookings</span></a>
+          <span>Booking</span></a>
       </li>
 
 
       <!-- Nav Item - Trip Management -->
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url();?>trip_management/all">
-          <i class="fas fa-fw fa-paper-plane"></i>
+        <a class="nav-link" href="<?= base_url('trip_management/allTrip') ?>">
+          <i class="fas fa-fw fa-road"></i>
           <span>Trip Management</span></a>
       </li>
 
       <!-- Nav Item - Routes -->
-      <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url();?>route/all">
+     <!--  <li class="nav-item">
+        <a class="nav-link" href="<?= base_url('route/all') ?>">
           <i class="fas fa-fw fa-road"></i>
           <span>Routes</span></a>
       </li>
-
+ -->
       <!-- Nav Item - UV Units -->
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url();?>uv_unit/all">
+        <a class="nav-link" href="<?= base_url('uv_unit') ?>">
           <i class="fas fa-fw fa-bus"></i>
           <span>UV Express</span></a>
       </li>
@@ -104,12 +111,12 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-users"></i>
-          <span>Manage Employees</span>
+          <span>Employees</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url();?>employee/driver">Drivers</a>
-            <a class="collapse-item" href="<?php echo base_url();?>employee/clerk">Clerks</a>
+            <a class="collapse-item" href="<?= base_url('employee/view/Driver') ?>">Drivers</a>
+            <a class="collapse-item" href="<?= base_url('employee/view/Clerk') ?>">Clerks</a>
           </div>
         </div>
       </li>
@@ -118,40 +125,42 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#log-panel" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-list"></i>
-          <span>Logs</span>
+          <span>System Logs</span>
         </a>
         <div id="log-panel" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="<?php echo base_url();?>logs/all">Activiy</a>
-            <a class="collapse-item" href="<?php echo base_url();?>logs/get_accident">Acciddent</a>
-            <a class="collapse-item" href="<?php echo base_url();?>logs/get_over_speed">Over Speed</a>
+            <a class="collapse-item" href="<?= base_url('logs/userActivity') ?>">User Activiy</a>
+            <a class="collapse-item" href="<?= base_url('logs/allAccident') ?>">Acciddent</a>
+            <a class="collapse-item" href="<?= base_url('logs/over_speed') ?>">Over Speed</a>
           </div>
         </div>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url('logs/get_feedback');?>">
-          <i class="fas fa-fw fa-info"></i>
+        <a class="nav-link" href="<?= base_url('logs/get_feedback/10') ?>">
+          <i class="fas fa-fw fa-comment"></i>
           <span>Feedback</span></a>
       </li>
-
+      <!-- Else id if clerk -->
       <?php } elseif ($role == 'clerk') { ?>
 
-           <!-- Nav Item - Bookings -->
+      <!-- Nav Item - Bookings -->
       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url();?>booking/all">
+        <a class="nav-link" href="<?= base_url('booking') ?>">
           <i class="fas fa-fw fa-book"></i>
           <span>Bookings</span></a>
       </li>
 
       <?php } ?>
+      <!-- nd if else -->
+
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
       <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
+      <!-- <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0"></button>
+      </div> -->
 
     </ul>
     <!-- End of Sidebar -->
@@ -163,68 +172,46 @@
       <div id="content">
 
         <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow" id="nav-top">
 
           <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+          <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
 
+          <div class="d-flex justify-content-center w-100">
+            <div class="text-white bg-danger shadow-sm" id="serverFailed">
+              <i class="fa fa-exclamation-circle fa-fw"></i>
+              Server connection failed!
+            </div>
+          </div>
 
-          <!-- Topbar Navbar -->
-          <ul class="navbar-nav  ml-auto">
-
-           
-            
+          <!-- User info -->
+          <ul class="navbar-nav  ml-auto" id="topBar">
             <div class="topbar-divider d-none d-sm-block"></div>
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                  <?php 
-                    echo $this->session->userdata('f_name').' '.$this->session->userdata('l_name');
-                  ?>
-                    
-                  </span>
-                <img class="img-profile rounded-circle" src="<?php echo base_url();?>/assets/img/avatar.png">
+                  <?= $this->session->userdata('f_name').' '.$this->session->userdata('l_name') ?>
+                </span>
+                <img class="img-profile rounded-circle" id="navUserImg" src="<?php echo base_url($this->session->userdata('img_url'));?>">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-
-                <?php if ($this->session->userdata('role') == 'admin'):?>
-
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="<?=base_url('user/account/profile')?>">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
+                <a class="dropdown-item" href="<?=base_url('user/account/activity')?>">
+                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Activity Log
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>
-
-                <?php else:?>
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                  </a>
-
-                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                  </a>
-
-                <?php endif ?>
-
-
-
-
-
               </div>
             </li>
 

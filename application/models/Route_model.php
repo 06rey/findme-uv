@@ -72,7 +72,6 @@ class route_model extends CI_Model {
 		$data_array = [
 		'via' => $this->input->post('via',true),
 		'fare' => $this->input->post('fare',true)
-
 		];
 
 		 $this->db->update('route',$data_array,['route_id' => $id]);
@@ -86,7 +85,6 @@ class route_model extends CI_Model {
 							where('route.company_id', $this->session->userdata('company_id'))->
 							get()->
 							result();
-
 	}
 
 	public function check_route($origin ="", $destination = "") {

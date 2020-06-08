@@ -3,106 +3,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User extends CI_Controller {
 
-	public function register()
-	{	
-		$pageTitle = "Add User";
-		$message = $this->session->flashdata('message');
-		$this->load->library('form_validation');
-		$this->load->view('add_user_view',['pageTitle'=> $pageTitle, 'message'=> $message]);
+	private function checkUser(){
+		if (!$this->user_model->is_logged_in() ) {
+			redirect('user/login');
+		}else if($this->session->userdata('role') == ('clerk')) {
+			redirect('booking');
+		}
 	}
-
-	public function register_validation()
-	{	
-		
-		$this->load->library('form_validation');
-
-		$this->form_validation->set_rules(
-        'username', 'Username',
-        'required|min_length[5]|max_length[15]|is_unique[user.username]',
-        array(
-                'required'      => 'You have not provided %s.',
-                'is_unique'     => 'This %s already exists.'
-        	)
-		);
-
-		$this->form_validation->set_rules('password', 'Password', 'required');
-		$this->form_validation->set_rules('cpassword', 'Password Confirmation', 'required|matches[password]');
-		$this->form_validation->set_rules('status', 'Status', 'required');
-		$this->form_validation->set_rules('role', 'Role', 'required');
-		$this->form_validation->set_rules('user_id', 'user_id', 'required');
-
-
-		$this->session->mark_as_flash('message');
-
-		if ($this->form_validation->run() == FALSE)
-                {
-                	//set error
-                	$message = [
-                		'type' => 'danger',
-                		'message' => validation_errors()	
-                	];
-                	$this->session->set_flashdata('message', $message);
-                     redirect('user/register');
-                	
-                }
-                else
-                {      
-                	//set a success msg        
-					if ($this->user_model->register()) {
-						$message = [
-                		'type' => 'success',
-                		'message' => 'Successfully Added User!'
-		                ];
-		                $this->session->set_flashdata('message', $message);
-
-
-
-		                //   Activity Logger
-
-		                $this->logger
-						     ->user($this->session->userdata('username')) //Set Username, who created this  Action
-						     ->role($this->session->userdata('role')) //Set User role, who created this  Action
-						     ->type('Added user') //Entry type like, Post, Page, Entry
-						     ->id(1) //Entry ID
-						     ->token('Add') //Token identify Action
-						     ->log(); //Add Database Entry
-
-						redirect('user/register');
-					}
-					else
-					{
-						//set error
-						redirect('user/register');
-					}
-                }
-
-
-
-	}
-
 
 	public 	function login() {
-		
-		$pageTitle = "Login Page";
-		$message = $this->session->flashdata('message');
-		$this->load->library('form_validation');
+		if ($this->user_model->is_logged_in() ) {
+			redirect('dashboard');
+		}
 
+		$this->load->library('form_validation');
 		$this->load->view('login_page_view',[
-			'pageTitle'=>$pageTitle,
-			'message'=> $message
+			'pageTitle'=>"Login Page",
+			'message'=> $this->session->flashdata('message')
 		]);
 	}
 	
 	// Validate login
 	public 	function login_validation() {	
-
+		if ($this->user_model->is_logged_in() ) {
+			redirect('dashboard');
+		}
 		$this->session->mark_as_flash('message');
-
 		$login = $this->user_model->login();
 		if ($login == 'success') {
-
-			$this->log_model->log('Logged in to the system');
-
+			$this->log_model->log([
+				'activity' => 'Logged in to the system',
+				'data' 		 => 'None',
+				'table'		 => 'None',
+				'ref_id'   => 'None'
+			]);
 			switch ($this->session->userdata('role')) {
 				case 'owner':
 					redirect('dashboard');
@@ -111,7 +45,7 @@ class User extends CI_Controller {
 					redirect('dashboard');
 					break;
 				case 'clerk':
-					redirect('trip_management/all');
+					redirect('booking');
 					break;
 			}
 		} else if ($login == 'not_found') {
@@ -120,23 +54,103 @@ class User extends CI_Controller {
                 'message' => 'Invalid Login Data.'	
             ];
             $this->session->set_flashdata('message', $message);
-
 			redirect('user/login');
 		} else {
 			$message = [
-                'type' => 'danger',
-                'message' => 'Sorry! Your account is currently unathorized. Please contact your administrator.'
-            ];
-            $this->session->set_flashdata('message', $message);
-
+          'type' => 'danger',
+          'message' => 'Sorry! Your account is currently unathorized. Please contact your administrator.'
+      ];
+      $this->session->set_flashdata('message', $message);
 			redirect('user/login');
 		}
 	}
 
-	public function logout() {
-		$this->log_model->log('Logged out from the system');
-		$this->user_model->logout();
+	public function account($type){
+		if (!$this->user_model->is_logged_in() ) {
 			redirect('user/login');
+		}
+		$this->load->view('user_profile',[
+			'pageTitle'=>"Account",
+			'type' => $type,
+			'data' => $this->session->userdata()
+		]);
+	}
+
+	public function updateProfile(){
+		if ($this->employee_model->checkAccountMobileNumber()){
+			$affected_rows = $this->employee_model->updateAccount();
+			if ($affected_rows > 0){
+	 			$this->log_model->log([
+					'activity' => 'Update account information',
+					'data' 		 => $this->log_model->getEmployee($this->session->userdata('employee_id')),
+					'table'		 => 'none',
+					'ref_id'   => $this->session->userdata('employee_id')
+				]);
+				$this->session->set_userdata('contact_no', $_POST['contact_no']);
+				$this->session->set_userdata('address', $_POST['address']);
+	 		}
+			echo json_encode([
+				'status' => true,
+				'data' => $affected_rows > 0 ? true : false
+			]);
+		}else{
+			echo json_encode([
+				'status' => false,
+				'data' => 'contact exists'
+			]);
+		}
+	}
+
+	public function logout() {
+		$this->user_model->logout();
+		$this->log_model->log([
+			'activity' => 'Logged out from the system',
+			'data' 		 => 'None',
+			'table'		 => 'None',
+			'ref_id'   => 'None'
+		]);
+		redirect('user/login');
+	}
+
+	public function changeAccountPassword(){
+		if ($this->user_model->changeAccountPassword()){
+			$data = true;
+			$this->log_model->log([
+				'activity' => 'Change account password.',
+				'data' 		 => 'None',
+				'table'		 => 'None',
+				'ref_id'   => 'None'
+			]);
+		}else{
+			$data = false;
+		}
+		echo json_encode([
+			'data' => $data
+		]);
+	}
+
+	public function changeImage(){
+		if (isset($_FILES['img'])){
+			$status = true;
+			if ($this->employee_model->changeImage() != false){
+				$data = true;
+				$this->log_model->log([
+					'activity' => 'Change account profile picture.',
+					'data' 		 => 'None',
+					'table'		 => 'None',
+					'ref_id'   => 'None'
+				]);
+			}else{
+				$data = false;
+			}
+		}else{
+			$status = false;
+			$data = false;
+		}
+		echo json_encode([
+			'status' => $status,
+			'data' => $data
+		]);
 	}
 
 	public function forgot_password() {

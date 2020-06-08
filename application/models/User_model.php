@@ -128,6 +128,12 @@ class user_model extends CI_Model {
 		}
 	}
 
+	public function changeAccountPassword(){
+		$this->db->where('user_id = '.$this->session->userdata('user_id')." AND password = '".sha1($_POST['old_pass'])."'")
+						 ->update('user', ['password'=>sha1($_POST['new_pass'])]);
+		return $this->db->affected_rows() > 0 ? true : false;
+	}
+
 	public function get_user($user_id = "", $table = "") {
 		return $this->db->join($table, $table.'.user_id = user.user_id')->
 						where('user.user_id = '.$user_id)->

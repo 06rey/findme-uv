@@ -3,103 +3,163 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class employee_model extends CI_Model {
 
-	public $f_name;
-	public $m_name;
-	public $l_name;
-	public $license_no;
-	public $contact_no;
-	public $address;
-	public $role;
-	public $company_id;
-	public $is_login;
-	public $token;
-	public $user_id;
+	private $companyId;
 
-	public function register($role = "")
-	{
+	function __construct(){
+		$this->companyId = $this->session->userdata('company_id');
+	}
 
-		$this->f_name = $this->input->post('f_name',true);
-		$this->m_name = $this->input->post('m_name',true);
-		$this->l_name = $this->input->post('l_name',true);
-		$this->contact_no = $this->input->post('contact_no',true);
-		$this->address = $this->input->post('address',true);
-		$this->role = $role;
-		$this->company_id = $this->session->userdata('company_id');
-		$this->is_login = $this->session->userdata('company_id');
-		$this->token = '';
-		$this->license_no = '';
+	/*
+  |--------------------------------------------------------------------------
+  | ADD/INSERT
+  |--------------------------------------------------------------------------
+  */
 
-		if ($role == 'driver') {
-			$this->license_no =$this->input->post('license_no',true);
-			$username = $this->contact_no;
-		} else {
-			$username = $this->input->post('username',true);
-		}
+	public function insertEmployee(){
+		$_POST['is_login'] = '';
+		$_POST['token'] = '';
+		$_POST['company_id'] = $this->companyId;
+		$_POST['user_id'] = $this->insertUser();
+		$_POST['img_url'] = $this->saveImage($_FILES); // Save user image
+		unset($_POST['password']);
+		unset($_POST['cpassword']);
+		unset($_POST['imgUrl']);
+		$this->db->insert('employee', $_POST);
+		return $this->db->insert_id();
+	}
 
-		$user = [
-			'username' => $username,
-			'password' => sha1($this->input->post('password',true)),
+	public function insertUser(){
+		$this->db->insert('user', [
+			'username' => $_POST['contact_no'],
+			'password' => sha1($_POST['password']),
 			'status' => 1,
-			'role' => $this->role
+			'role' => $_POST['role']
+		]);
+		return $this->db->insert_id();
+	}
+
+	/*
+  |--------------------------------------------------------------------------
+  | GET/FETCH
+  |--------------------------------------------------------------------------
+  */
+
+	public function getAllDriver(){
+		return $this->db->join('user', 'user.user_id = employee.user_id')
+										->where("employee.role = 'driver' AND employee.company_id = $this->companyId")
+										->get('employee')->result();
+	}
+
+	public function getAllClerk(){
+		return $this->db->join('user', 'user.user_id = employee.user_id')
+										->where("employee.role = 'clerk' AND employee.company_id = $this->companyId")
+										->get('employee')->result();
+	}
+
+	public function getDriverSched($employeeId){
+		return $this->db->where("driver_id = $employeeId AND (status = 'Pending' || status = 'Traveling')")
+										->get('trip')->result();
+	}
+
+	/*
+  |--------------------------------------------------------------------------
+  | UPDATE
+  |--------------------------------------------------------------------------
+  */
+	public function updateStatus(){
+		$this->db->update('user', ['status'=>$_POST['status']], ['user_id' => $_POST['user_id']]);
+		return $this->db->affected_rows();
+	}
+
+	public function updateEmployee(){
+		$data = [
+			'address'=> $_POST['address'], 
+			'contact_no' => $_POST['contact_no']
 		];
-
-		$this->db->insert('user', $user);
-		$this->user_id = $this->db->insert_id();
-
-		$this->db->insert('employee', $this);
-
-		return	$this->db->insert_id();
-	}
-	
-	public function get_driver()
-	{	
-		$this->db->select('*');
-		$this->db->from('user');
-		$this->db->join('employee', 'user.user_id = employee.user_id');
-		$this->db->where(['employee.role'=>'driver']);
-		$query = $this->db->get();
- 		return $query->result();
+		if (isset($_FILES['img']['name'])){
+			$this->deleteImage($_POST['employee_id']);
+			$data['img_url'] = $this->saveImage($_FILES);
+		}
+		$this->db->update('employee', $data, ['employee_id'=> $_POST['employee_id']]);
+		return $this->db->affected_rows();
 	}
 
-	public function get_clerk()
-	{	
-		$this->db->select('*');
-		$this->db->from('user');
-		$this->db->join('employee', 'user.user_id = employee.user_id');
-		$this->db->where(['employee.role'=>'clerk']);
-		$query = $this->db->get();
- 		return $query->result();
-	}
-
-	public function get($id = "")
-	{	
-			
-		$this->db->select('*');
-		$this->db->from('user');
-		$this->db->join('employee', 'user.user_id = employee.user_id');
-		$this->db->where(['user.user_id'=>$id]);
-		$query = $this->db->get();
- 		return $query->row();
-	}
-
-	public function edit($id = "",  $user_id = "")
-	{
-		$employee = [
-			'f_name' => $this->input->post('f_name',true),
-			'm_name' => $this->input->post('m_name',true),
-			'l_name' => $this->input->post('l_name',true),
-			'license_no' => $this->input->post('license_no',true),
-			'contact_no' => $this->input->post('contact_no',true),
-			'address' => $this->input->post('address',true)
+	public function updateAccount(){
+		$data = [
+			'address'=> $_POST['address'], 
+			'contact_no' => $_POST['contact_no']
 		];
+		$this->db->update('employee', $data, ['employee_id'=> $this->session->userdata('employee_id')]);
+		return $this->db->affected_rows();
+	}
 
-		$this->db->update('user', ['status'=>$this->input->post('status',true)], ['user_id' => $user_id]);
-		$user = $this->db->affected_rows();
-		$this->db->update('employee',$employee,['employee_id' => $id]);
-		$emp = $this->db->affected_rows();
-		return $user + $emp;
+	/*
+  |--------------------------------------------------------------------------
+  | MISC
+  |--------------------------------------------------------------------------
+  */
+
+	public function checkDuplicate(){
+		return $this->db->get_where('employee', [
+			'f_name'=>$_POST['f_name'], 
+			'm_name'=>$_POST['m_name'], 
+			'l_name'=>$_POST['l_name']
+		])->num_rows() > 0 ? false : true;
+	}
+
+	public function checkMobileNumber(){
+		return $this->db->get_where('employee', [
+			'contact_no'=>$_POST['contact_no']
+		])->num_rows() > 0 ? false : true;
+	}
+
+	public function checkAccountMobileNumber(){
+		return $this->db->where("contact_no = '".$_POST['contact_no']."' AND employee_id != ".$this->session->userdata('employee_id'))
+										->get('employee')
+										->num_rows() > 0 ? false : true;
+	}
+
+	public function deleteImage($employeeId){
+		$filePath = $this->db->get_where('employee', ['employee_id'=>$employeeId])->result()[0]->img_url;
+		if ($filePath != ''){
+			unlink($filePath);
+		}
+	}
+
+	public function changeImage(){
+		$this->deleteImage($this->session->userdata('employee_id'));
+		$src = $this->saveImage($_FILES);
+		$this->db->update(
+			'employee', 
+			['img_url'=>$src],
+			['employee_id'=>$this->session->userdata('employee_id')]);
+		if ($this->db->affected_rows() > 0){
+			$this->session->set_userdata('img_url', $src);
+			return $src;
+		}else{
+			return false;
+		}
+	}
+
+	private function saveImage($files){
+		if (isset($files['img']['name'])){
+			$unique = 0;
+  		$dir = 'assets/img/user/'; //Set image directory
+  		$fileType = strtolower(pathinfo(basename($files['img']['name']), PATHINFO_EXTENSION)); // Get filetype extension
+  		if ($fileType == 'jpg' || $fileType == 'png' || $fileType == 'jpeg'){
+  			while (file_exists($dir.$unique.basename($files['img']['name']))) {
+  				$unique++;
+  			}
+  			$file = $dir.$unique.basename($files['img']['name']); // Append $unique to form unique target file
+  			move_uploaded_file($files['img']['tmp_name'], $file);
+  			return $file;
+  		}else{
+  			return 'assets/img/user-gray.png';
+  		}
+  	}else{
+  		return 'assets/img/user-gray.png';
+  	}
 	}
 }
-
 
 ?>

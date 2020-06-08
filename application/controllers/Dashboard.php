@@ -8,7 +8,7 @@ class Dashboard extends CI_Controller {
 		if (!$this->user_model->is_logged_in() ) {
 			redirect('user/login');
 		}elseif ($this->session->userdata('role') == ('clerk')) {
-			redirect('booking/all');
+			redirect('booking');
 		}
 		
 		$pageTitle = "Dashboard";
@@ -34,7 +34,8 @@ class Dashboard extends CI_Controller {
 			'route' => $route,
 			'uv' => $uv,
 			'employee' => $employee,
-			'book' => $book
+			'book' => $book,
+			'all_feedback'=> $this->log_model->get_all_feedback(5)
 
 		]);
 	}

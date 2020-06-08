@@ -5,16 +5,11 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-         
-            <h1 class="h3 mt-3 text-gray-800"><?php echo $pageTitle?></h1>
-            <hr>
+          <h1 class="h3 mt-3 text-gray-800"><?php echo $pageTitle?></h1>
 
-       
-
+          <hr>
           <!-- Content Row -->
           <div class="row">
-
-
 
             <!-- Trip Management-->
             <div class="col-xl-3 col-md-6 mb-4">
@@ -82,7 +77,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div><a class="text-xs font-weight-bold text-warning text-uppercase mb-1" href="<?php echo base_url('employee/all') ?>">EMPLOYEES</a></div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">EMPLOYEES</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $employee; ?></div>
                     </div>
                     <div class="col-auto">
@@ -101,7 +96,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div><a class="text-xs font-weight-bold text-warning text-uppercase mb-1" href="<?php echo base_url('booking/all') ?>">BOOKINGS</a></div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">BOOKINGS</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $book; ?></div>
                     </div>
                     <div class="col-auto">
@@ -118,6 +113,8 @@
 
           </div>
 
+          
+
         </div>
         <!-- /.container-fluid -->
 
@@ -126,8 +123,4 @@
 
 
 <?php $this->load->view('partials/footer');?>
-
-
-
-
-
+<script type="text/javascript"> _allRouteTripCallback = ()=>{} </script>
