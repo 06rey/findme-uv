@@ -29,7 +29,7 @@
 <body class="no-scroll" id="page-top">
 
   <!-- Page Wrapper -->
-  <div class="h-100" id="wrapper">
+  <div class="h-100" id="wrapper" style="min-height: 100vh">
 
     <!-- Loading -->
   <div class="loading-container">

@@ -26,22 +26,20 @@ class user_model extends CI_Model {
 	public function login() {
 
 		 $username =$this->input->post('username',true);
-		 $password =sha1($this->input->post('password',true));
+		 $password = sha1($this->input->post('password',true));
 
 		 $query = $this->db->get_where('user',['username'=>$username,'password'=>$password]);
 		 $user = $query->row_array();
 
 		 if ($query->num_rows()) {
-		 	$query2 = $this->db->get_where('user',['user_id'=>$user['user_id'],'status'=>1]);
-		 	$status = $query->row_array();
-		 	if ($query2->num_rows()) {
+		 	if ($user['status'] == "1") {
 
 		 		switch ($user['role']) {
 				 	case 'owner':
 				 		$user_info = $this->get_owner_info($user['user_id']);
 				 		break;
 				 	case 'admin':
-				 		$user_info = $this->get_admin_info($user['user_id']);
+						 $user_info = $this->get_admin_info($user['user_id']);
 				 		break;
 				 	case 'clerk':
 				 		$user_info = $this->get_clerk_info($user['user_id']);

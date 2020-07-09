@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 29, 2020 at 09:43 AM
+-- Generation Time: Jul 09, 2020 at 08:25 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.9
 
@@ -25,13 +25,43 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `accident_contact`
+--
+
+CREATE TABLE `accident_contact` (
+  `contact_id` int(10) NOT NULL,
+  `contact_no` varchar(50) NOT NULL,
+  `description` varchar(250) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `route_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accident_log`
+--
+
+CREATE TABLE `accident_log` (
+  `accident_id` int(10) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `speed` varchar(50) NOT NULL,
+  `g_force` varchar(50) NOT NULL,
+  `trip_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `booking`
 --
 
 CREATE TABLE `booking` (
   `booking_id` int(11) NOT NULL,
   `no_of_passenger` int(11) NOT NULL,
-  `amount` double DEFAULT NULL,
+  `amount` double(22,0) DEFAULT NULL,
   `pass_type` varchar(255) NOT NULL,
   `time_stamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `notes` longtext NOT NULL,
@@ -39,16 +69,7 @@ CREATE TABLE `booking` (
   `device_id` varchar(50) NOT NULL,
   `trip_id` int(11) NOT NULL,
   `passenger_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `booking`
---
-
-INSERT INTO `booking` (`booking_id`, `no_of_passenger`, `amount`, `pass_type`, `time_stamp`, `notes`, `im_a_passenger`, `device_id`, `trip_id`, `passenger_id`) VALUES
-(2, 3, 960, 'terminal', '2020-02-27 17:26:04', '', 'true', 'none', 7, 1),
-(3, 1, 320, 'terminal', '2020-02-28 05:22:28', '', 'true', 'none', 8, 1),
-(4, 1, 320, 'terminal', '2020-02-29 07:17:15', '', 'true', '1a58852c04587817', 11, 1);
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -58,11 +79,11 @@ INSERT INTO `booking` (`booking_id`, `no_of_passenger`, `amount`, `pass_type`, `
 
 CREATE TABLE `booking_queue` (
   `queue_id` int(10) NOT NULL,
-  `no_of_pass` int(10) NOT NULL DEFAULT 0,
+  `no_of_pass` int(10) NOT NULL,
   `status` varchar(50) NOT NULL,
   `time_stamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `trip_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -75,14 +96,14 @@ CREATE TABLE `company` (
   `company_name` varchar(255) NOT NULL,
   `business_permit_no` varchar(255) NOT NULL,
   `franchise_no` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `company`
 --
 
 INSERT INTO `company` (`company_id`, `company_name`, `business_permit_no`, `franchise_no`) VALUES
-(1, 'Duptours Shuttle Services', 'AASASD-234234', 'SASD3234');
+(1, 'Duptours Shuttle Services', '3244234234', '23423423423');
 
 -- --------------------------------------------------------
 
@@ -102,14 +123,7 @@ CREATE TABLE `company_owner` (
   `contact_no` varchar(255) NOT NULL,
   `company_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `company_owner`
---
-
-INSERT INTO `company_owner` (`owner_id`, `f_name`, `m_name`, `l_name`, `date_of_birth`, `gender`, `address`, `email`, `contact_no`, `company_id`, `user_id`) VALUES
-(1, 'Rodolfo', 'D', 'Pladier', '2087-02-20', 'male', 'tacloban City', '', '09955426298', 1, 1);
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -128,22 +142,18 @@ CREATE TABLE `employee` (
   `role` varchar(255) NOT NULL,
   `is_login` tinyint(4) NOT NULL,
   `token` varchar(255) NOT NULL,
+  `img_url` text NOT NULL,
   `company_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`employee_id`, `f_name`, `m_name`, `l_name`, `license_no`, `contact_no`, `address`, `role`, `is_login`, `token`, `company_id`, `user_id`) VALUES
-(1, 'Charlie Mae', 'A', 'Belasa', NULL, '09955426109', '', 'admin', 0, '', 1, 2),
-(6, 'Mark', 'Eder', 'Algario', 'LICENSE-1234444', '09955426108', 'Tacloban City', 'driver', 1, '1', 1, 6),
-(7, 'Jose', 'Talo', 'Manaloto', 'LICENSE-1234442', '09955426101', 'Catbalogan Samar', 'driver', 1, '', 1, 7),
-(8, 'Mike', 'Tan', 'Garcia', 'LICENSE-1234441', '09955426102', 'Palo, Leyte', 'driver', 1, '', 1, 8),
-(9, 'Pedorse', 'A', 'McWills', 'asdasd', '09955426201', 'Palo Leyte', 'clerk', 1, '', 1, 9),
-(10, 'Jian', 'K', 'Macasa', 'sadasdasd', '09955426202', 'Utap, Tacloban City', 'clerk', 1, '', 1, 10),
-(11, 'Joan', 'Eder', 'Flores', '', '09955426309', 'Marasbaras, Tacloban City', 'clerk', 1, '', 1, 11);
+INSERT INTO `employee` (`employee_id`, `f_name`, `m_name`, `l_name`, `license_no`, `contact_no`, `address`, `role`, `is_login`, `token`, `img_url`, `company_id`, `user_id`) VALUES
+(1, 'Junrey', 'M', 'Algario', NULL, '09955426109', 'Cavite West, PAlo Leyte', 'admin', 0, '', 'assets/img/user/088321371_226855358708372_8384432273881038848_o.jpg', 1, 1),
+(2, 'Joan', 'K', 'Macasa', '', '09955426108', 'Tacloban City', 'Clerk', 0, '', 'assets/img/user/01 - Copy (4) - Copy - Copy.jpg', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -154,25 +164,22 @@ INSERT INTO `employee` (`employee_id`, `f_name`, `m_name`, `l_name`, `license_no
 CREATE TABLE `employee_reset_code` (
   `reset_id` int(10) NOT NULL,
   `code` varchar(50) NOT NULL,
-  `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
-  `username` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `employee_reset_code`
+-- Table structure for table `feedback`
 --
 
-INSERT INTO `employee_reset_code` (`reset_id`, `code`, `date_added`, `username`) VALUES
-(1, 'e808922a8a60f8a67599f9d81416e1b782a692ed', '0000-00-00 00:00:00', '$username'),
-(2, '87f436735f18f8522339dea6bc1cbd43c8ffc009', '2020-02-27 16:33:38', '$username'),
-(3, '9fb0252ca1308d4f8d5912d978b8f23c4228f11c', '2020-02-27 16:34:11', 'owner'),
-(4, 'a15fd5d8182bfc3aec2db911c7eb44e04bfbc379', '2020-02-27 16:35:46', 'owner'),
-(5, 'f438235c10b3bb3bbe7b67ff727c858060a672ce', '2020-02-28 05:04:08', 'admin'),
-(6, '4c2aa88044bee6adae76521a7441c539f0a77149', '2020-02-28 07:03:36', 'admin'),
-(7, 'ca505d61235024b8b3a15508b6f73061333068f4', '2020-02-28 07:28:54', 'admin'),
-(8, '7062bfafdec37378d0e16a25dbec18fd8c6ededb', '2020-02-28 12:05:19', 'admin'),
-(9, '0a4f9ca47fcde3002cbcaa30df218656dde0f7f6', '2020-02-28 12:09:59', 'admin'),
-(10, 'a6ff52dfc279e3e1f7d00a24715641af0fbb7a35', '2020-02-28 12:16:57', 'admin');
+CREATE TABLE `feedback` (
+  `feedback_id` int(10) NOT NULL,
+  `message` text NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `passenger_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -183,78 +190,55 @@ INSERT INTO `employee_reset_code` (`reset_id`, `code`, `date_added`, `username`)
 CREATE TABLE `logger` (
   `id` int(10) NOT NULL,
   `activity` varchar(250) NOT NULL,
+  `data` text NOT NULL,
+  `table` text NOT NULL,
   `created_on` datetime NOT NULL,
   `ip_address` varchar(255) NOT NULL,
   `role` varchar(50) NOT NULL,
+  `ref_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `logger`
 --
 
-INSERT INTO `logger` (`id`, `activity`, `created_on`, `ip_address`, `role`, `user_id`) VALUES
-(1, 'Added seat reservation', '2020-02-24 14:01:19', '::1', 'admin', 2),
-(2, 'Added new uv express van', '2020-02-24 14:32:10', '::1', 'admin', 2),
-(3, 'Added seat reservation', '2020-02-24 15:59:00', '::1', 'admin', 2),
-(4, 'Remove reserved seat.', '2020-02-24 15:59:17', '::1', 'admin', 2),
-(5, 'Remove reserved seat.', '2020-02-24 15:59:21', '::1', 'admin', 2),
-(6, 'Remove reserved seat.', '2020-02-24 15:59:27', '::1', 'admin', 2),
-(7, 'Logged in to the system', '2020-02-24 22:48:29', '::1', 'admin', 2),
-(8, 'Added seat reservation', '2020-02-24 22:49:06', '::1', 'admin', 2),
-(9, 'Remove reserved seat.', '2020-02-24 22:49:18', '::1', 'admin', 2),
-(10, 'Added trip schedule', '2020-02-24 23:33:19', '::1', 'admin', 2),
-(11, 'Logged in to the system', '2020-02-25 08:13:20', '::1', 'admin', 2),
-(12, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:17', '::1', 'admin', 2),
-(13, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(14, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(15, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(16, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(17, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(18, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(19, 'Due trip schedule. Auto cancelled by the system', '2020-02-25 08:33:18', '::1', 'admin', 2),
-(20, 'Added trip schedule', '2020-02-25 08:58:59', '::1', 'admin', 2),
-(21, 'Logged in to the system', '2020-02-25 14:13:04', '::1', 'admin', 2),
-(22, 'Logged in to the system', '2020-02-26 18:59:17', '::1', 'admin', 2),
-(23, 'Due trip schedule. Auto cancelled by the system', '2020-02-26 18:59:20', '::1', 'admin', 2),
-(24, 'Logged in to the system', '2020-02-27 10:13:26', '::1', 'admin', 2),
-(25, 'Added new route', '2020-02-27 14:37:11', '::1', 'admin', 2),
-(26, 'Added new route', '2020-02-27 14:48:15', '::1', 'admin', 2),
-(27, 'Added trip schedule', '2020-02-27 14:52:49', '::1', 'admin', 2),
-(28, 'Added new route', '2020-02-27 15:11:36', '::1', 'admin', 2),
-(29, 'Added trip schedule', '2020-02-27 15:12:59', '::1', 'admin', 2),
-(30, 'Added trip schedule', '2020-02-27 15:14:04', '::1', 'admin', 2),
-(31, 'Added new route', '2020-02-27 15:34:30', '::1', 'admin', 2),
-(32, 'Added trip schedule', '2020-02-27 15:34:53', '::1', 'admin', 2),
-(33, 'Added trip schedule', '2020-02-27 15:51:46', '::1', 'admin', 2),
-(34, 'Logged in to the system', '2020-02-27 19:35:51', '::1', 'admin', 2),
-(35, 'Logged out from the system', '2020-02-27 19:56:06', '::1', 'admin', 2),
-(36, 'Logged in to the system', '2020-02-27 22:40:16', '::1', 'admin', 2),
-(37, 'Logged out from the system', '2020-02-27 22:40:32', '::1', 'admin', 2),
-(38, 'Logged in to the system', '2020-02-28 00:59:27', '::1', 'admin', 2),
-(39, 'Added trip schedule', '2020-02-28 01:24:18', '::1', 'admin', 2),
-(40, 'Cancelled trip schedule', '2020-02-28 01:25:17', '::1', 'admin', 2),
-(41, 'Cancelled trip schedule', '2020-02-28 01:25:38', '::1', 'admin', 2),
-(42, 'Logged in to the system', '2020-02-28 13:03:47', '::1', 'admin', 2),
-(43, 'Logged out from the system', '2020-02-28 13:03:56', '::1', 'admin', 2),
-(44, 'Logged in to the system', '2020-02-28 13:21:20', '::1', 'admin', 2),
-(45, 'Added trip schedule', '2020-02-28 13:21:56', '::1', 'admin', 2),
-(46, 'Logged out from the system', '2020-02-28 15:03:24', '::1', 'admin', 2),
-(47, 'Logged in to the system', '2020-02-29 09:27:48', '::1', 'admin', 2),
-(48, 'Due trip schedule. Auto cancelled by the system', '2020-02-29 09:28:34', '::1', 'admin', 2),
-(49, 'Updated driver record', '2020-02-29 09:34:32', '::1', 'admin', 2),
-(50, 'Updated driver record', '2020-02-29 09:35:46', '::1', 'admin', 2),
-(51, 'Updated driver record', '2020-02-29 09:35:52', '::1', 'admin', 2),
-(52, 'Updated driver record', '2020-02-29 09:35:58', '::1', 'admin', 2),
-(53, 'Logged in to the system', '2020-02-29 09:48:11', '::1', 'admin', 2),
-(54, 'Added trip schedule', '2020-02-29 09:48:31', '::1', 'admin', 2),
-(55, 'Updated driver record', '2020-02-29 10:05:12', '::1', 'admin', 2),
-(56, 'Updated driver record', '2020-02-29 10:05:19', '::1', 'admin', 2),
-(57, 'Added trip schedule', '2020-02-29 10:19:49', '::1', 'admin', 2),
-(58, 'Due trip schedule. Auto cancelled by the system', '2020-02-29 10:19:50', '::1', 'admin', 2),
-(59, 'Added trip schedule', '2020-02-29 10:21:20', '::1', 'admin', 2),
-(60, 'Logged in to the system', '2020-02-29 15:16:03', '::1', 'admin', 2),
-(61, 'Due trip schedule. Auto cancelled by the system', '2020-02-29 15:16:06', '::1', 'admin', 2);
+INSERT INTO `logger` (`id`, `activity`, `data`, `table`, `created_on`, `ip_address`, `role`, `ref_id`, `user_id`) VALUES
+(1, 'Logged in to the system', 'None', 'None', '2020-07-09 21:57:29', '::1', 'admin', 0, 1),
+(2, 'Change account profile picture.', 'None', 'None', '2020-07-09 21:57:57', '::1', 'admin', 0, 1),
+(3, 'Logged out from the system', 'None', 'None', '2020-07-09 21:59:17', '::1', 'admin', 0, 1),
+(4, 'Logged in to the system', 'None', 'None', '2020-07-09 21:59:35', '::1', 'admin', 0, 1),
+(5, 'Added Joan Macasa as clerk.', '{\"employee_id\":\"2\",\"f_name\":\"Joan\",\"m_name\":\"K\",\"l_name\":\"Macasa\",\"license_no\":\"\",\"contact_no\":\"09955426108\",\"address\":\"Tacloban City\",\"role\":\"Clerk\",\"status\":\"1\"}', 'employee', '2020-07-09 22:01:43', '::1', 'admin', 2, 1),
+(6, 'Update Joan Macasa`s information.', '{\"employee_id\":\"2\",\"f_name\":\"Joan\",\"m_name\":\"K\",\"l_name\":\"Macasa\",\"license_no\":\"\",\"contact_no\":\"09955426108\",\"address\":\"Tacloban City\",\"role\":\"Clerk\",\"status\":\"1\"}', 'employee', '2020-07-09 22:02:10', '::1', 'admin', 2, 1),
+(7, 'Logged out from the system', 'None', 'None', '2020-07-09 22:02:49', '::1', 'admin', 0, 1),
+(8, 'Logged in to the system', 'None', 'None', '2020-07-09 22:03:29', '::1', 'admin', 0, 1),
+(9, 'Change account profile picture.', 'None', 'None', '2020-07-09 22:03:44', '::1', 'admin', 0, 1),
+(10, 'Added new UV Express with plate number KLJ 345.', '{\"uv_id\":\"1\",\"plate_no\":\"KLJ 345\",\"max_pass\":\"14\",\"franchise_no\":\"LTFRB-9283\",\"model\":\"TOYATA HIACE\",\"brand_name\":\"TOYOTA\"}', 'uv_unit', '2020-07-09 22:14:05', '::1', 'admin', 1, 1),
+(11, 'Added new UV Express with plate number ASD-456.', '{\"uv_id\":\"2\",\"plate_no\":\"ASD-456\",\"max_pass\":\"14\",\"franchise_no\":\"LTFRB-9283\",\"model\":\"TOYATA HIACE\",\"brand_name\":\"TOYOTA\"}', 'uv_unit', '2020-07-09 22:14:20', '::1', 'admin', 2, 1),
+(12, 'Added new UV Express with plate number KLJ 345.', '{\"uv_id\":\"3\",\"plate_no\":\"KLJ 345\",\"max_pass\":\"14\",\"franchise_no\":\"LTFRB-9283\",\"model\":\"TOYATA HIACE\",\"brand_name\":\"TOYOTA\"}', 'uv_unit', '2020-07-09 22:14:36', '::1', 'admin', 3, 1),
+(13, 'Added Tacloban City to Ormoc City new trip schedule.', '{\"trip_id\":\"1\",\"date\":\"2020-07-09\",\"depart_time\":\"23:30:00\",\"arrival_time\":\"00:00:00\",\"status\":\"Pending\",\"origin\":\"Tacloban City\",\"destination\":\"Ormoc City\",\"plate_no\":\"KLJ 345\",\"driver_name\":null}', 'trip', '2020-07-09 22:16:29', '::1', 'admin', 1, 1),
+(14, 'Added Tacloban City to Ormoc City new trip schedule.', '{\"trip_id\":\"2\",\"date\":\"2020-07-10\",\"depart_time\":\"06:30:00\",\"arrival_time\":\"00:00:00\",\"status\":\"Pending\",\"origin\":\"Tacloban City\",\"destination\":\"Ormoc City\",\"plate_no\":\"ASD-456\",\"driver_name\":null}', 'trip', '2020-07-09 22:17:06', '::1', 'admin', 2, 1),
+(15, 'Deactivate Joan Macasa`s account.', '{\"employee_id\":\"2\",\"f_name\":\"Joan\",\"m_name\":\"K\",\"l_name\":\"Macasa\",\"license_no\":\"\",\"contact_no\":\"09955426108\",\"address\":\"Tacloban City\",\"role\":\"Clerk\",\"status\":\"0\"}', 'employee', '2020-07-09 22:19:15', '::1', 'admin', 2, 1),
+(16, 'Activate Joan Macasa`s account.', '{\"employee_id\":\"2\",\"f_name\":\"Joan\",\"m_name\":\"K\",\"l_name\":\"Macasa\",\"license_no\":\"\",\"contact_no\":\"09955426108\",\"address\":\"Tacloban City\",\"role\":\"Clerk\",\"status\":\"1\"}', 'employee', '2020-07-09 22:19:38', '::1', 'admin', 2, 1),
+(17, 'Logged out from the system', 'None', 'None', '2020-07-09 22:20:00', '::1', 'admin', 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE `notification` (
+  `notification_id` int(10) NOT NULL,
+  `notification` text NOT NULL,
+  `notification_type` varchar(50) NOT NULL,
+  `sent_to` varchar(50) NOT NULL,
+  `sent_by` varchar(50) NOT NULL,
+  `reciever` varchar(50) NOT NULL,
+  `sender` varchar(50) NOT NULL,
+  `is_recieve` int(11) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -265,9 +249,9 @@ INSERT INTO `logger` (`id`, `activity`, `created_on`, `ip_address`, `role`, `use
 CREATE TABLE `over_speed_log` (
   `over_speed_id` int(10) NOT NULL,
   `speed` varchar(50) NOT NULL,
-  `time_stamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `date_time` datetime NOT NULL,
   `trip_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -283,14 +267,7 @@ CREATE TABLE `passenger` (
   `contact` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `passenger`
---
-
-INSERT INTO `passenger` (`passenger_id`, `f_name`, `l_name`, `gender`, `contact`, `email`, `password`) VALUES
-(1, 'Junrey', 'Algario', 'Male', '09955426109', 'junrey.algario@gmail.com', '7c222fb2927d828af22f592134e8932480637c0d');
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -303,7 +280,22 @@ CREATE TABLE `passenger_reset_code` (
   `code` varchar(255) NOT NULL,
   `time_stamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `passenger_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reply`
+--
+
+CREATE TABLE `reply` (
+  `reply_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `sender_type` varchar(50) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `feedback_id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -322,7 +314,7 @@ CREATE TABLE `route` (
   `destination_lat_lng` varchar(255) NOT NULL,
   `way_point` longtext NOT NULL,
   `company_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `route`
@@ -341,26 +333,17 @@ INSERT INTO `route` (`route_id`, `route_name`, `origin`, `destination`, `via`, `
 
 CREATE TABLE `seat` (
   `seat_id` int(11) NOT NULL,
-  `boarding_pass` varchar(255) NOT NULL DEFAULT '0',
-  `full_name` varchar(255) NOT NULL DEFAULT '0',
-  `contact_no` varchar(255) NOT NULL DEFAULT '0',
+  `boarding_pass` varchar(255) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `contact_no` varchar(255) NOT NULL,
   `seat_no` int(11) NOT NULL,
   `pick_up_loc` varchar(255) NOT NULL,
   `drop_off_loc` varchar(255) NOT NULL,
   `boarding_status` varchar(255) NOT NULL,
+  `pick_up_time` datetime NOT NULL,
+  `drop_off_time` datetime NOT NULL,
   `booking_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `seat`
---
-
-INSERT INTO `seat` (`seat_id`, `boarding_pass`, `full_name`, `contact_no`, `seat_no`, `pick_up_loc`, `drop_off_loc`, `boarding_status`, `booking_id`) VALUES
-(3, 'UV-7-1', 'Junrey Algario', '09955426109', 1, 'Terminal', '', 'waiting', 2),
-(4, 'UV-7-2', 'Junrey Algario', '09955426109', 2, 'Terminal', '', 'waiting', 2),
-(5, 'UV-7-5', 'Junrey Algario', '09955426109', 5, 'Terminal', '', 'waiting', 2),
-(6, 'UV-8-2', 'Junrey Algario', '09955426109', 2, 'Terminal', '', 'waiting', 3),
-(7, 'UV-9-4', 'Junrey Algario', '09955426109', 4, '{\"lat\":\"11.204741525596098\",\"lng\":\"124.99152861890775\"}', '', 'waiting', 4);
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -370,9 +353,9 @@ INSERT INTO `seat` (`seat_id`, `boarding_pass`, `full_name`, `contact_no`, `seat
 
 CREATE TABLE `selected_seat` (
   `select_id` int(10) NOT NULL,
-  `selected_seat_no` int(10) NOT NULL DEFAULT 0,
-  `queue_id` int(10) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `selected_seat_no` int(10) NOT NULL,
+  `queue_id` int(10) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -388,24 +371,20 @@ CREATE TABLE `trip` (
   `status` varchar(255) NOT NULL,
   `current_location` varchar(255) DEFAULT NULL,
   `is_online` int(11) NOT NULL,
-  `last_online` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_online` varchar(50) NOT NULL,
   `query_date_time` varchar(50) NOT NULL,
-  `driver_id` int(11) DEFAULT NULL,
+  `route_id` int(10) NOT NULL,
   `uv_id` int(11) DEFAULT NULL,
-  `route_id` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `driver_id` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `trip`
 --
 
-INSERT INTO `trip` (`trip_id`, `date`, `depart_time`, `arrival_time`, `status`, `current_location`, `is_online`, `last_online`, `query_date_time`, `driver_id`, `uv_id`, `route_id`) VALUES
-(1, '2020-02-26', '04:30:00', '00:00:00', 'Cancelled', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-02-28 07:05:34', '2020-02-26 04:30:00', NULL, NULL, 1),
-(6, '2020-02-28', '06:00:00', '00:00:00', 'Cancelled', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-02-28 07:05:35', '2020-02-28 06:00:00', NULL, NULL, 1),
-(7, '2020-02-28', '06:30:00', '00:00:00', 'Cancelled', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-02-28 07:05:36', '2020-02-28 06:30:00', NULL, NULL, 1),
-(8, '2020-02-28', '17:30:00', '00:00:00', 'Cancelled', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-02-29 01:28:34', '2020-02-28 17:30:00', NULL, NULL, 1),
-(9, '2020-02-29', '13:30:00', '00:00:00', 'Cancelled', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-02-29 07:16:06', '2020-02-29 13:30:00', 6, 3, 1),
-(11, '2020-02-29', '15:16:00', '00:00:00', 'Traveling', '{\"lat\":\"11.221622694211874\",\"lng\":\"124.99252468856855\"}', 0, '2020-02-29 07:19:30', '2020-02-29 19:00:00', NULL, NULL, 1);
+INSERT INTO `trip` (`trip_id`, `date`, `depart_time`, `arrival_time`, `status`, `current_location`, `is_online`, `last_online`, `query_date_time`, `route_id`, `uv_id`, `driver_id`) VALUES
+(1, '2020-07-09', '23:30:00', '00:00:00', 'Pending', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-07-09 22:16:29', '2020-07-09 23:30:00', 1, 1, NULL),
+(2, '2020-07-10', '06:30:00', '00:00:00', 'Pending', '{\"lat\":\"11.240913148102107\",\"lng\":\"125.00206028732282\"}', 0, '2020-07-09 22:17:06', '2020-07-10 06:30:00', 1, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -419,21 +398,28 @@ CREATE TABLE `user` (
   `password` varchar(150) NOT NULL,
   `status` tinyint(4) NOT NULL,
   `role` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`user_id`, `username`, `password`, `status`, `role`) VALUES
-(1, 'owner', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'owner'),
-(2, 'admin', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'admin'),
-(6, '09955426109', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'driver'),
-(7, '09955426101', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'driver'),
-(8, '09955426102', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'driver'),
-(9, '342342', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'clerk'),
-(10, 'clerk', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'clerk'),
-(11, 'joanMacasa', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'clerk');
+(1, 'admin', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'admin'),
+(2, '09955426108', '7c222fb2927d828af22f592134e8932480637c0d', 1, 'Clerk');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_password_change`
+--
+
+CREATE TABLE `user_password_change` (
+  `change_id` int(10) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -449,17 +435,16 @@ CREATE TABLE `uv_unit` (
   `model` varchar(255) NOT NULL,
   `brand_name` varchar(255) NOT NULL,
   `company_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `uv_unit`
 --
 
 INSERT INTO `uv_unit` (`uv_id`, `plate_no`, `max_pass`, `franchise_no`, `model`, `brand_name`, `company_id`) VALUES
-(1, 'HVN-234', 14, 'LTFRB-9283', 'HIACE 2016', 'TOYOTA', 1),
-(3, 'TEMP-PLATE', 14, 'sdfsdfsdf', 'sdfsdfsdf', 'sdfsdfsdfsdf', 1),
-(4, 'KLJ 345', 14, 'asdasdad', 'asdasd', 'sadasdasdasd', 1),
-(5, 'asdasdasda', 14, 'asdasd', 'asdasd', 'asdasdasd', 1);
+(1, 'KLJ 345', 14, 'LTFRB-9283', 'TOYATA HIACE', 'TOYOTA', 1),
+(2, 'ASD-456', 14, 'LTFRB-9283', 'TOYATA HIACE', 'TOYOTA', 1),
+(3, 'KLJ 345', 14, 'LTFRB-9283', 'TOYATA HIACE', 'TOYOTA', 1);
 
 -- --------------------------------------------------------
 
@@ -471,26 +456,35 @@ CREATE TABLE `waiting_queue` (
   `waiting_id` int(11) NOT NULL,
   `description` varchar(50) DEFAULT NULL,
   `trip_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `accident_contact`
+--
+ALTER TABLE `accident_contact`
+  ADD PRIMARY KEY (`contact_id`);
+
+--
+-- Indexes for table `accident_log`
+--
+ALTER TABLE `accident_log`
+  ADD PRIMARY KEY (`accident_id`);
+
+--
 -- Indexes for table `booking`
 --
 ALTER TABLE `booking`
-  ADD PRIMARY KEY (`booking_id`),
-  ADD KEY `FK_booking_passenger` (`passenger_id`),
-  ADD KEY `FK_booking_trip` (`trip_id`);
+  ADD PRIMARY KEY (`booking_id`);
 
 --
 -- Indexes for table `booking_queue`
 --
 ALTER TABLE `booking_queue`
-  ADD PRIMARY KEY (`queue_id`),
-  ADD KEY `FK_booking_queue_trip` (`trip_id`);
+  ADD PRIMARY KEY (`queue_id`);
 
 --
 -- Indexes for table `company`
@@ -502,17 +496,13 @@ ALTER TABLE `company`
 -- Indexes for table `company_owner`
 --
 ALTER TABLE `company_owner`
-  ADD PRIMARY KEY (`owner_id`),
-  ADD KEY `FK_company_owner_company` (`company_id`),
-  ADD KEY `FK_company_owner_user` (`user_id`);
+  ADD PRIMARY KEY (`owner_id`);
 
 --
 -- Indexes for table `employee`
 --
 ALTER TABLE `employee`
-  ADD PRIMARY KEY (`employee_id`),
-  ADD KEY `FK_employee_user` (`user_id`),
-  ADD KEY `FK_employee_company` (`company_id`);
+  ADD PRIMARY KEY (`employee_id`);
 
 --
 -- Indexes for table `employee_reset_code`
@@ -521,18 +511,28 @@ ALTER TABLE `employee_reset_code`
   ADD PRIMARY KEY (`reset_id`);
 
 --
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`);
+
+--
 -- Indexes for table `logger`
 --
 ALTER TABLE `logger`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_logger_user` (`user_id`);
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`notification_id`);
 
 --
 -- Indexes for table `over_speed_log`
 --
 ALTER TABLE `over_speed_log`
-  ADD PRIMARY KEY (`over_speed_id`),
-  ADD KEY `FK_over_speed_log_trip` (`trip_id`);
+  ADD PRIMARY KEY (`over_speed_id`);
 
 --
 -- Indexes for table `passenger`
@@ -544,38 +544,37 @@ ALTER TABLE `passenger`
 -- Indexes for table `passenger_reset_code`
 --
 ALTER TABLE `passenger_reset_code`
-  ADD PRIMARY KEY (`forgot_id`),
-  ADD KEY `FK_forgot_password_log_passenger` (`passenger_id`);
+  ADD PRIMARY KEY (`forgot_id`);
+
+--
+-- Indexes for table `reply`
+--
+ALTER TABLE `reply`
+  ADD PRIMARY KEY (`reply_id`);
 
 --
 -- Indexes for table `route`
 --
 ALTER TABLE `route`
-  ADD PRIMARY KEY (`route_id`),
-  ADD KEY `FK_route_company` (`company_id`);
+  ADD PRIMARY KEY (`route_id`);
 
 --
 -- Indexes for table `seat`
 --
 ALTER TABLE `seat`
-  ADD PRIMARY KEY (`seat_id`),
-  ADD KEY `FK_seat_booking` (`booking_id`);
+  ADD PRIMARY KEY (`seat_id`);
 
 --
 -- Indexes for table `selected_seat`
 --
 ALTER TABLE `selected_seat`
-  ADD PRIMARY KEY (`select_id`),
-  ADD KEY `FK__booking_queue` (`queue_id`);
+  ADD PRIMARY KEY (`select_id`);
 
 --
 -- Indexes for table `trip`
 --
 ALTER TABLE `trip`
-  ADD PRIMARY KEY (`trip_id`),
-  ADD KEY `FK_trip_uv_unit` (`uv_id`),
-  ADD KEY `FK_trip_route` (`route_id`),
-  ADD KEY `FK_trip_employee` (`driver_id`);
+  ADD PRIMARY KEY (`trip_id`);
 
 --
 -- Indexes for table `user`
@@ -584,34 +583,50 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`);
 
 --
+-- Indexes for table `user_password_change`
+--
+ALTER TABLE `user_password_change`
+  ADD PRIMARY KEY (`change_id`);
+
+--
 -- Indexes for table `uv_unit`
 --
 ALTER TABLE `uv_unit`
-  ADD PRIMARY KEY (`uv_id`),
-  ADD KEY `FK_uv_unit_company` (`company_id`);
+  ADD PRIMARY KEY (`uv_id`);
 
 --
 -- Indexes for table `waiting_queue`
 --
 ALTER TABLE `waiting_queue`
-  ADD PRIMARY KEY (`waiting_id`),
-  ADD KEY `FK_transaction_queue_trip` (`trip_id`);
+  ADD PRIMARY KEY (`waiting_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `accident_contact`
+--
+ALTER TABLE `accident_contact`
+  MODIFY `contact_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `accident_log`
+--
+ALTER TABLE `accident_log`
+  MODIFY `accident_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `booking_queue`
 --
 ALTER TABLE `booking_queue`
-  MODIFY `queue_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `queue_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `company`
@@ -623,37 +638,49 @@ ALTER TABLE `company`
 -- AUTO_INCREMENT for table `company_owner`
 --
 ALTER TABLE `company_owner`
-  MODIFY `owner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `owner_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `employee_reset_code`
 --
 ALTER TABLE `employee_reset_code`
-  MODIFY `reset_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `reset_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `logger`
 --
 ALTER TABLE `logger`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `notification_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `over_speed_log`
 --
 ALTER TABLE `over_speed_log`
-  MODIFY `over_speed_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
+  MODIFY `over_speed_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `passenger`
 --
 ALTER TABLE `passenger`
-  MODIFY `passenger_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `passenger_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `passenger_reset_code`
@@ -662,132 +689,58 @@ ALTER TABLE `passenger_reset_code`
   MODIFY `forgot_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `reply`
+--
+ALTER TABLE `reply`
+  MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `route`
 --
 ALTER TABLE `route`
-  MODIFY `route_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `route_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `seat`
 --
 ALTER TABLE `seat`
-  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `selected_seat`
 --
 ALTER TABLE `selected_seat`
-  MODIFY `select_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `select_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trip`
 --
 ALTER TABLE `trip`
-  MODIFY `trip_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `trip_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `user_password_change`
+--
+ALTER TABLE `user_password_change`
+  MODIFY `change_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `uv_unit`
 --
 ALTER TABLE `uv_unit`
-  MODIFY `uv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `uv_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `waiting_queue`
 --
 ALTER TABLE `waiting_queue`
-  MODIFY `waiting_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `booking`
---
-ALTER TABLE `booking`
-  ADD CONSTRAINT `FK_booking_trip` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`);
-
---
--- Constraints for table `booking_queue`
---
-ALTER TABLE `booking_queue`
-  ADD CONSTRAINT `FK_booking_queue_trip` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`);
-
---
--- Constraints for table `company_owner`
---
-ALTER TABLE `company_owner`
-  ADD CONSTRAINT `FK_company_owner_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
-  ADD CONSTRAINT `FK_company_owner_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
-
---
--- Constraints for table `employee`
---
-ALTER TABLE `employee`
-  ADD CONSTRAINT `FK_employee_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
-  ADD CONSTRAINT `FK_employee_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
-
---
--- Constraints for table `logger`
---
-ALTER TABLE `logger`
-  ADD CONSTRAINT `FK_logger_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
-
---
--- Constraints for table `over_speed_log`
---
-ALTER TABLE `over_speed_log`
-  ADD CONSTRAINT `FK_over_speed_log_trip` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`);
-
---
--- Constraints for table `passenger_reset_code`
---
-ALTER TABLE `passenger_reset_code`
-  ADD CONSTRAINT `FK_passenger_reset_code_passenger` FOREIGN KEY (`passenger_id`) REFERENCES `passenger` (`passenger_id`);
-
---
--- Constraints for table `route`
---
-ALTER TABLE `route`
-  ADD CONSTRAINT `FK_route_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`);
-
---
--- Constraints for table `seat`
---
-ALTER TABLE `seat`
-  ADD CONSTRAINT `FK_seat_booking` FOREIGN KEY (`booking_id`) REFERENCES `booking` (`booking_id`);
-
---
--- Constraints for table `selected_seat`
---
-ALTER TABLE `selected_seat`
-  ADD CONSTRAINT `FK__booking_queue` FOREIGN KEY (`queue_id`) REFERENCES `booking_queue` (`queue_id`);
-
---
--- Constraints for table `trip`
---
-ALTER TABLE `trip`
-  ADD CONSTRAINT `FK_trip_employee` FOREIGN KEY (`driver_id`) REFERENCES `employee` (`employee_id`),
-  ADD CONSTRAINT `FK_trip_route` FOREIGN KEY (`route_id`) REFERENCES `route` (`route_id`),
-  ADD CONSTRAINT `FK_trip_uv_unit` FOREIGN KEY (`uv_id`) REFERENCES `uv_unit` (`uv_id`);
-
---
--- Constraints for table `uv_unit`
---
-ALTER TABLE `uv_unit`
-  ADD CONSTRAINT `FK_uv_unit_company` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`);
-
---
--- Constraints for table `waiting_queue`
---
-ALTER TABLE `waiting_queue`
-  ADD CONSTRAINT `FK_transaction_queue_trip` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`);
+  MODIFY `waiting_id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

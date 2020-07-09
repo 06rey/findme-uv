@@ -30,6 +30,7 @@ class User extends CI_Controller {
 		}
 		$this->session->mark_as_flash('message');
 		$login = $this->user_model->login();
+
 		if ($login == 'success') {
 			$this->log_model->log([
 				'activity' => 'Logged in to the system',
